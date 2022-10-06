@@ -7311,4 +7311,2544 @@
         <tag>分享</tag>
       </tags>
   </entry>
+  <entry>
+    <title>MySQL基础篇(中)</title>
+    <url>/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/</url>
+    <content><![CDATA[<h1 id="MySQL-单行函数"><a href="#MySQL-单行函数" class="headerlink" title="MySQL 单行函数"></a>MySQL 单行函数</h1><h2 id="函数的理解"><a href="#函数的理解" class="headerlink" title="函数的理解"></a><strong>函数的理解</strong></h2><h3 id="什么是函数"><a href="#什么是函数" class="headerlink" title="什么是函数"></a><strong>什么是函数</strong></h3><p>​    函数在计算机语言的使用中贯穿始终，函数的作用是什么呢？它可以把我们经常使用的代码封装起来， 需要的时候直接调用即可。这样既 提高了代码效率 ，又 提高了可维护性 。在 SQL 中我们也可以使用函数 对检索出来的数据进行函数操作。使用这些函数，可以极大地 提高用户对数据库的管理效率 。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061246208.png" alt="img"></p>
+<p>​    从函数定义的角度出发，我们可以将函数分成 内置函数 和 自定义函数 。在 SQL 语言中，同样也包括了 内置函数和自定义函数。内置函数是系统内置的通用函数，而自定义函数是我们根据自己的需要编写 的。</p>
+<h3 id="不同DBMS函数的差异"><a href="#不同DBMS函数的差异" class="headerlink" title="不同DBMS函数的差异"></a><strong>不同DBMS函数的差异</strong></h3><p>​    我们在使用 SQL 语言的时候，不是直接和这门语言打交道，而是通过它使用不同的数据库软件，即DBMS。 <strong>DBMS</strong> <strong>之间的差异性很大，远大于同一个语言不同版本之间的差异。</strong> 实际上，只有很少的函数是 被 DBMS 同时支持的。比如，大多数 DBMS 使用（||）或者（</p>
+<p>+ ）来做拼接符，而在 MySQL 中的字符串拼 接函数为concat() 。大部分 DBMS 会有自己特定的函数，这就意味着 <strong>采用</strong> <strong>SQL</strong> <strong>函数的代码可移植性是很</strong> <strong>差的</strong> ，因此在使用函数的时候需要特别注意。</p>
+<h3 id="MySQL的内置函数及分类"><a href="#MySQL的内置函数及分类" class="headerlink" title="MySQL的内置函数及分类"></a><strong>MySQL的内置函数及分类</strong></h3><p>​    MySQL提供了丰富的内置函数，这些函数使得数据的维护与管理更加方便，能够更好地提供数据的分析与统计功能，在一定程度上提高了开发人员进行数据分析与统计的效率。</p>
+<p>MySQL 提供的内置函数从 实现的功能角度 可以分为数值函数、字符串函数、日期和时间函数、流程控制 函数、加密与解密函数、获取MySQL 信息函数、聚合函数等。这里，我将这些丰富的内置函数再分为两类： 单行函数 、 聚合函数（或分组函数） 。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462126.png" alt="img"></p>
+<p><em><strong>*单行函数*</strong></em></p>
+<p>​    <em><strong>*操作数据对象*</strong></em></p>
+<p>​    <em><strong>*接受参数返回一个结果*</strong></em></p>
+<p>​    <em><strong>*只对一行进行变换*</strong></em></p>
+<p>​    <em><strong>*每行返回一个结果*</strong></em></p>
+<p>​    <em><strong>*可以嵌套*</strong></em></p>
+<p>​    <em><strong>*参数可以是一列或一个值*</strong></em></p>
+<h2 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a><strong>数值函数</strong></h2><h3 id="基本函数"><a href="#基本函数" class="headerlink" title="基本函数"></a><strong>基本函数</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ABS(x)</strong></td>
+<td><strong>返回x的绝对值</strong></td>
+</tr>
+<tr>
+<td><strong>SIGN(X)</strong></td>
+<td><strong>返回X的符号。正数返回1，负数返回-1，0返回0</strong></td>
+</tr>
+<tr>
+<td><strong>PI()</strong></td>
+<td><strong>返回圆周率的值</strong></td>
+</tr>
+<tr>
+<td><strong>CEIL(x)，CEILING(x)</strong></td>
+<td><strong>返回大于或等于某个值的最小整数</strong></td>
+</tr>
+<tr>
+<td><strong>FLOOR(x)</strong></td>
+<td><strong>返回小于或等于某个值的最大整数</strong></td>
+</tr>
+<tr>
+<td><strong>LEAST(e1,e2,e3…)</strong></td>
+<td><strong>返回列表中的最小值</strong></td>
+</tr>
+<tr>
+<td><strong>GREATEST(e1,e2,e3…)</strong></td>
+<td><strong>返回列表中的最大值</strong></td>
+</tr>
+<tr>
+<td><strong>MOD(x,y)</strong></td>
+<td><strong>返回X除以Y后的余数</strong></td>
+</tr>
+<tr>
+<td><strong>RAND()</strong></td>
+<td><strong>返回0~1的随机值</strong></td>
+</tr>
+<tr>
+<td><strong>RAND(x)</strong></td>
+<td><strong>返回0~1的随机值，其中x的值用作种子值，相同的X值会产生相同的随机数</strong></td>
+</tr>
+<tr>
+<td><strong>ROUND(x)</strong></td>
+<td><strong>返回一个对x的值进行四舍五入后，最接近于X的整数</strong></td>
+</tr>
+<tr>
+<td><strong>ROUND(x,y)</strong></td>
+<td><strong>返回一个对x的值进行四舍五入后最接近X的值，并保留到小数点后面Y位</strong></td>
+</tr>
+<tr>
+<td><strong>TRUNCATE(x,y)</strong></td>
+<td><strong>返回数字x截断为y位小数的结果</strong></td>
+</tr>
+<tr>
+<td><strong>SQRT(x)</strong></td>
+<td><strong>返回x的平方根。当X的值为负数时，返回NULL</strong></td>
+</tr>
+</tbody></table>
+<p>举例：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462165.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462167.png" alt="img"></p>
+<p> <strong>取随机数</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462271.png" alt="img"></p>
+<p> <strong>四舍五入</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462275.png" alt="img"></p>
+<p> <strong>截断</strong><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462277.png" alt="img"></p>
+<p> <strong>平方根</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462281.png" alt="img"></p>
+<p> <strong>嵌套</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462385.png" alt="img"></p>
+<h3 id="角度与弧度互换函数"><a href="#角度与弧度互换函数" class="headerlink" title="角度与弧度互换函数"></a><strong>角度与弧度互换函数</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*RADIANS(x)*</strong></em></td>
+<td><em><strong>*将角度转化为弧度，其中，参数x为角度值*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*DEGREES(x)*</strong></em></td>
+<td><em><strong>*将弧度转化为角度，其中，参数x为弧度值*</strong></em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/2022100612462394.png" alt="img"></p>
+<h3 id="三角函数"><a href="#三角函数" class="headerlink" title="三角函数"></a><strong>三角函数</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*SIN(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的正弦值，其中，参数*</em>*<em>x*</em>*<em>为弧度值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ASIN(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的反正弦值，即获取正弦为*</em>*<em>x*</em>*<em>的值。如果*</em>*<em>x*</em>*<em>的值不在*</em>**-1*</em>*<em>到*</em>*<em>1*</em>*<em>之间，则返回*</em>*<em>NULL*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*COS(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的余弦值，其中，参数*</em>*<em>x*</em>*<em>为弧度值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ACOS(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的反余弦值，即获取余弦为*</em>*<em>x*</em>*<em>的值。如果*</em>*<em>x*</em>*<em>的值不在*</em>**-1*</em>*<em>到*</em>*<em>1*</em>*<em>之间，则返回*</em>*<em>NULL*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*TAN(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的正切值，其中，参数*</em>*<em>x*</em>*<em>为弧度值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ATAN(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的反正切值，即返回正切值为*</em>*<em>x*</em>*<em>的值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ATAN2(m,n)*</strong></em></td>
+<td><em><strong>*返回两个参数的反正切值 ，相当于tan（m&#x2F;n）*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*COT(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的余切值，其中，*</em>*<em>X*</em>*<em>为弧度值*</em>*</em></td>
+</tr>
+</tbody></table>
+<p>​    ATAN2(M,N)函数返回两个参数的反正切值。 与 ATAN(X) 函数相比， ATAN2(M,N) 需要两个参数，例如有两个点point(x1,y1) 和 point(x2,y2) ，使用 ATAN(X) 函数计算反正切值为 ATAN((y2-y1)&#x2F;(x2-x1)) ，使用 ATAN2(M,N) 计算反正切值则为ATAN2(y2-y1,x2-x1) 。由使用方式可以看出，当 x2-x1 等于 0 时， ATAN(X) 函数会报错，而ATAN2(M,N)函数则仍然可以计算。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124623111.png" alt="img"></p>
+<h3 id="指数与对数"><a href="#指数与对数" class="headerlink" title="指数与对数"></a><strong>指数与对数</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>*<em>*POW(x,y)*</em>*<em>，*</em>*<em>POWER(X,Y)*</em>*</em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的*</em>*<em>y*</em>*<em>次方*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*EXP(X)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>e*</em>*<em>的*</em>*<em>X*</em>*<em>次方，其中*</em>*<em>e*</em>*<em>是一个常数，*</em>*<em>2.718281828459045*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*LN(X)*</em>*<em>，*</em>*<em>LOG(X)*</em>*</em></td>
+<td><em>*<em>*返回以*</em>*<em>e*</em>*<em>为底的*</em>*<em>X*</em>*<em>的对数，当*</em>*<em>X&lt;&#x3D;0*</em>*<em>时，返回的结果为*</em>*<em>NULL*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LOG(X,Y)*</strong></em></td>
+<td><em>*<em>*返回以X*</em>*<em>为底的Y*</em>*<em>的对数，当X &lt;&#x3D; 0或Y*</em>**&lt;&#x3D;0*</em>*<em>时，返回的结果为*</em>*<em>NULL*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*LOG10(X)*</strong></em></td>
+<td><em>*<em>*返回以*</em>*<em>10*</em>*<em>为底的*</em>*<em>X*</em>*<em>的对数，当*</em>*<em>X&lt;&#x3D;0*</em>*<em>时，返回的结果为*</em>*<em>NULL*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LOG2(X)*</strong></em></td>
+<td><em>*<em>*返回以*</em>*<em>2*</em>*<em>为底的*</em>*<em>X*</em>*<em>的对数，当*</em>*<em>X&lt;&#x3D;0*</em>*<em>时，返回*</em>*<em>NULL*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124623124.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124624126.png" alt="img"></p>
+<h3 id="进制间的转换"><a href="#进制间的转换" class="headerlink" title="进制间的转换"></a><strong>进制间的转换</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*BIN(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的二进制编码*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*HEX(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的十六进制编码*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*OCT(x)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>x*</em>*<em>的八进制编码*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*CONV(x,f1,f2)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>f1*</em>*<em>进制数变成*</em>*<em>f2*</em>*<em>进制数*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124624137.png" alt="img"></p>
+<h2 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a><strong>字符串函数</strong></h2><h3 id="字符串函数大全"><a href="#字符串函数大全" class="headerlink" title="字符串函数大全"></a><strong>字符串函数大全</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*ASCII(S)*</strong></em></td>
+<td><em><strong>*返回字符串S中的第一个字符的ASCII码值*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*CHAR_LENGTH(s)*</strong></em></td>
+<td><em><strong>*返回字符串s的字符数。作用与CHARACTER_LENGTH(s)相同*</strong></em></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><em><strong>*CONCAT(s1,s2,……,sn)*</strong></em></th>
+<th><em><strong>*连接s1,s2,……,sn为一个字符串*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*CONCAT_WS(x,s1,s2,……,sn)*</strong></em></td>
+<td><em><strong>*同CONCAT(s1,s2,…)函数，但是每个字符串之间要加上x*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*INSERT(str,idx,len,replacestr)*</strong></em></td>
+<td>****将字符串str从第idx位置开始，len个字符长的子串替换为符串replacestr，****若idx超出str长度，则返回原str，不再进行替换</td>
+</tr>
+<tr>
+<td><em><strong>*REPLACE(str,a,b)*</strong></em></td>
+<td>****用字符串b替换字符串str中所有出现的字符串a，****若a不在str中，则返回原str，不再进行替换</td>
+</tr>
+<tr>
+<td><em><strong>*UPPER(s)或UCASE(s)*</strong></em></td>
+<td><em><strong>*将字符串s的所有字母转成大写字母*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*LOWER(s)或LCASE(s)*</strong></em></td>
+<td><em><strong>*将字符串s的所有字母转成小写字母*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*LEFT(str,n)*</strong></em></td>
+<td><em><strong>*返回字符串str最左边的n个字符*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*RIGHT(str,n)*</strong></em></td>
+<td><em><strong>*返回字符串str最右边的n个字符*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*LPAD(str,len,pad)*</strong></em></td>
+<td><em><strong>*用字符串pad对str最左边进行填充，直到str的长度为len个字符*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*RPAD(str,len,pad)*</strong></em></td>
+<td><em><strong>*用字符串pad对str最右边进行填充，直到str的长度为len个字符*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*LTRIM(s)*</strong></em></td>
+<td><em><strong>*去掉字符串s左侧的空格*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*RTRIM(s)*</strong></em></td>
+<td><em><strong>*去掉字符串s右侧的空格*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(s)*</strong></em></td>
+<td><em><strong>*去掉字符串s开始与结尾的空格*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(s1 FROM s)*</strong></em></td>
+<td><em><strong>*去掉字符串s开始与结尾的s1*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(LEADING s1 FROM s)*</strong></em></td>
+<td><em><strong>*去掉字符串s开始处的s1*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(TRAILING s1*</strong></em> <em><strong>*FROM s)*</strong></em></td>
+<td><em><strong>*去掉字符串s结尾处的s1*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*REPEAT(str,n)*</strong></em></td>
+<td><em><strong>*返回str重复n次的结果*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*SPACE(n)*</strong></em></td>
+<td><em><strong>*返回n个空格*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*STRCMP(s1,s2)*</strong></em></td>
+<td><em><strong>*比较字符串s1,s2的ASCII码值的大小,返回正数为s1大，返回负数为s2大，返回0则一样大*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*SUBSTR(s,index,len)*</strong></em></td>
+<td><em><strong>*返回从字符串s的index位置其len个字符，作用与SUBSTRING(s,n,len)、MID(s,n,len)相同*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*LOCATE(substr,str)*</strong></em></td>
+<td><em><strong>*返回字符串substr在字符串str中首次出现的位置，作用于POSITION(substr IN str)、INSTR(str,substr)相同。未找到,FI’’返回0*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*ELT(m,s1,s2,…,sn)*</strong></em></td>
+<td><em><strong>*返回指定位置的字符串，如果m&#x3D;1，则返回s1，如果m&#x3D;2，则返回s2，如果m&#x3D;n，则返回sn*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*FIELD(s,s1,s2,…,sn)*</strong></em></td>
+<td><em><strong>*返回字符串s在字符串列表中第一次出现的位置*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*FIND_IN_SET(s1,s2)*</strong></em></td>
+<td><em><strong>*返回字符串s1在字符串s2中出现的位置。其中,字符串s2是一个以逗号分隔的字符串*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*REVERSE(s)*</strong></em></td>
+<td><em><strong>*返回s反转后的字符串*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*NULLIF(value1,value2)*</strong></em></td>
+<td>****比较两个字符串，如果value1与value2相等，则返回NULL，否****则返回 value1</td>
+</tr>
+</tbody></table>
+<p><strong>注意：MySQL中，字符串的位置是从1开始的。</strong></p>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*ASCII(S)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>S*</em>*<em>中的第一个字符的*</em>*<em>ASCII*</em>*<em>码值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*CHAR_LENGTH(s)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>s*</em>*<em>的字符数。作用与*</em>*<em>CHARACTER_LENGTH(s)*</em>*<em>相同*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LENGTH(s)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>s*</em>*<em>的字节数，和字符集有关*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124624188.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*CONCAT(s1,s2,……,sn)*</strong></em></td>
+<td><em>*<em>*连接*</em>*<em>s1,s2,……,sn*</em>*<em>为一个字符串*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*CONCAT_WS(x,s1,s2,……,sn)*</strong></em></td>
+<td><em>*<em>*同*</em>*<em>CONCAT(s1,s2,…)*</em>*<em>函数，但是每个字符串之间要加上*</em>*<em>x*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124625197.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124625199.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*INSERT(str,idx,len,replacestr)*</strong></em></td>
+<td>**<em>*将字符串*</em>*<em>str*</em>*<em>从第*</em>*<em>idx*</em>*<em>位置开始，*</em>*<em>len*</em>*<em>个字符长的子串替换为符串*</em>**replacestr，****若idx超出str长度，则返回原str，不再进行替换</td>
+</tr>
+<tr>
+<td><em><strong>*REPLACE(str,a,b)*</strong></em></td>
+<td>**<em>*用字符串*</em>*<em>b*</em>*<em>替换字符串*</em>*<em>str*</em>*<em>中所有出现的字符串*</em>**a，****若a不在str中，则返回原str，不再进行替换</td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124626208.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>*<em>*UPPER(s)*</em>*<em>或*</em>*<em>UCASE(s)*</em>*</em></td>
+<td><em>*<em>*将字符串*</em>*<em>s*</em>*<em>的所有字母转成大写字母*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*LOWER(s)*</em>*<em>或*</em>*<em>LCASE(s)*</em>*</em></td>
+<td><em>*<em>*将字符串*</em>*<em>s*</em>*<em>的所有字母转成小写字母*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LEFT(str,n)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>str*</em>*<em>最左边的*</em>*<em>n*</em>*<em>个字符*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*RIGHT(str,n)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>str*</em>*<em>最右边的*</em>*<em>n*</em>*<em>个字符*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124626219.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*LPAD(str,len,pad)*</strong></em></td>
+<td><em>*<em>*用字符串*</em>*<em>pad*</em>*<em>对*</em>*<em>str*</em>*<em>最左边进行填充，直到*</em>*<em>str*</em>*<em>的长度为*</em>*<em>len*</em>*<em>个字符*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*RPAD(str*</em>**,*</em>*<em>len,pad)*</em>**</td>
+<td><em>*<em>*用字符串*</em>*<em>pad*</em>*<em>对*</em>*<em>str*</em>*<em>最右边进行填充，直到*</em>*<em>str*</em>*<em>的长度为*</em>*<em>len*</em>*<em>个字符*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124626228.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*LTRIM(s)*</strong></em></td>
+<td><em>*<em>*去掉字符串*</em>*<em>s*</em>*<em>左侧的空格*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*RTRIM(s)*</strong></em></td>
+<td><em>*<em>*去掉字符串*</em>*<em>s*</em>*<em>右侧的空格*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(s)*</strong></em></td>
+<td><em>*<em>*去掉字符串*</em>*<em>s*</em>*<em>开始与结尾的空格*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(s1 FROM s)*</strong></em></td>
+<td><em>*<em>*去掉字符串*</em>*<em>s*</em>*<em>开始与结尾的*</em>*<em>s1*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(LEADING s1 FROM s)*</strong></em></td>
+<td><em>*<em>*去掉字符串*</em>*<em>s*</em>*<em>开始处的*</em>*<em>s1*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TRIM(TRAILING s1** **FROM s)*</strong></em></td>
+<td><em>*<em>*去掉字符串*</em>*<em>s*</em>*<em>结尾处的*</em>*<em>s1*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124627241.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*REPEAT(str,n)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>str*</em>*<em>重复*</em>*<em>n*</em>*<em>次的结果*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*SPACE(n)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>n*</em>*<em>个空格*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*STRCMP(s1,s2)*</strong></em></td>
+<td><em>*<em>*比较字符串*</em>*<em>s1,s2*</em>*<em>的*</em>*<em>ASCII*</em>*<em>码值的大小,返回正数为s1大，返回负数为s2大，返回0则一样大*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*SUBSTR(s,index,len)*</strong></em></td>
+<td><em>*<em>*返回从字符串*</em>*<em>s*</em>*<em>的*</em>*<em>index*</em>*<em>位置其*</em>*<em>len*</em>*<em>个字符，作用与*</em>*<em>SUBSTRING(s,n,len)*</em>*<em>、*</em>*<em>MID(s,n,len)*</em>*<em>相同*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124628252.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*LOCATE(substr,str)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>substr*</em>*<em>在字符串*</em>*<em>str*</em>*<em>中首次出现的位置，作用于*</em>*<em>POSITION(substr IN str)*</em>*<em>、*</em>*<em>INSTR(str,substr)*</em>*<em>相同。未找到,FI’’返回*</em>*<em>0*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ELT(m,s1,s2,…,sn)*</strong></em></td>
+<td><em>*<em>*返回指定位置的字符串，如果*</em>*<em>m&#x3D;1*</em>*<em>，则返回*</em>*<em>s1*</em>*<em>，如果*</em>*<em>m&#x3D;2*</em>*<em>，则返回*</em>*<em>s2*</em>*<em>，如果*</em>*<em>m&#x3D;n*</em>*<em>，则返回*</em>*<em>sn*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*FIELD(s,s1,s2,…,sn)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>s*</em>*<em>在字符串列表中第一次出现的位置*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*FIND_IN_SET(s1,s2)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>s1*</em>*<em>在字符串*</em>*<em>s2*</em>*<em>中出现的位置。其中,字符串*</em>*<em>s2*</em>*<em>是一个以逗号分隔的字符串*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*REVERSE(s)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>s*</em>*<em>反转后的字符串*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*NULLIF(value1,value2)*</strong></em></td>
+<td>**<em>*比较两个字符串，如果*</em>*<em>value1*</em>*<em>与*</em>*<em>value2*</em>*<em>相等，则返回*</em>**NULL****<strong>，否</strong>则返回 value1</td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124628265.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124628267.png" alt="img"></p>
+<h2 id="日期和时间函数"><a href="#日期和时间函数" class="headerlink" title="日期和时间函数"></a><strong>日期和时间函数</strong></h2><h3 id="获取日期、时间"><a href="#获取日期、时间" class="headerlink" title="获取日期、时间"></a><strong>获取日期、时间</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>*<em>*CURDATE(),*</em>*<em>CURRENT_DATE()*</em>*</em></td>
+<td><em><strong>*返回当前日期，只包含年、月、日*</strong></em></td>
+</tr>
+<tr>
+<td><em>*<em>*CURTIME(),*</em>*<em>CURRENT_TIME()*</em>*</em></td>
+<td><em><strong>*返回当前时间，只包含时、分、秒*</strong></em></td>
+</tr>
+<tr>
+<td><em>*<em>*NOW()*</em>**&#x2F;SYSDATE()&#x2F;CURRENT_TIMESTAMP()&#x2F;*</em>**<em><strong>*LOCALTIME()&#x2F;LOCALTIMESTAMP()*</strong></em></td>
+<td><em><strong>*返回当前系统日期和时间*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*UTC_DATE()*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>UTC*</em>**(*</em>*<em>世界标准时间)日期*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*UTC_TIME()*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>UTC*</em>**(*</em>*<em>世界标准时间)时间*</em>**</td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124629281.png" alt="img"></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124629283.png" alt="img"></h2><h3 id="日期与时间戳的转换"><a href="#日期与时间戳的转换" class="headerlink" title="日期与时间戳的转换"></a><strong>日期与时间戳的转换</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*UNIX_TIMESTAMP()*</strong></em></td>
+<td><em>*<em>*以*</em>*<em>UNIX*</em>*<em>时间戳的形式返回当前时间。*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*UNIX_TIMESTAMP(date)*</strong></em></td>
+<td><em>*<em>*将时间*</em>*<em>date*</em>*<em>以*</em>*<em>UNIX*</em>*<em>时间戳的形式返回。*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*FROM_UNIXTIME(timestamp)*</strong></em></td>
+<td><em>*<em>*将*</em>*<em>UNIX*</em>*<em>时间戳的时间转换为普通格式的时间*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124629295.png" alt="img"></p>
+<h3 id="获取月份、星期、星期数、天数等函数"><a href="#获取月份、星期、星期数、天数等函数" class="headerlink" title="获取月份、星期、星期数、天数等函数"></a><strong>获取月份、星期、星期数、天数等函数</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*YEAR(date)&#x2F;MONTH(date)&#x2F;DAY(date)*</strong></em></td>
+<td><em><strong>*返回具体的日期值*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*HOUR(time)&#x2F;MINUTE(time)&#x2F;SECOND(time)*</strong></em></td>
+<td><em><strong>*返回具体的时间值*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*MONTHNAME(date)*</strong></em></td>
+<td><em>*<em>*返回月份：*</em>*<em>January*</em>*<em>，*</em>**…*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*DAYNAME(date)*</strong></em></td>
+<td><em>*<em>*返回星期几：*</em>*<em>MONDAY*</em>*<em>，*</em>*<em>TUESDAY…..SUNDAY*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*WEEKDAY(date)*</strong></em></td>
+<td><em>*<em>*返回周几，注意，周*</em>*<em>1*</em>*<em>是*</em>*<em>0*</em>*<em>，周*</em>*<em>2*</em>*<em>是*</em>*<em>1*</em>*<em>，。。。周日是*</em>*<em>6*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*QUARTER(date)*</strong></em></td>
+<td><em>*<em>*返回日期对应的季度，范围为*</em>*<em>1*</em>*<em>～*</em>*<em>4*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*WEEK(date)*</em>*<em>，*</em>*<em>WEEKOFYEAR(date)*</em>*</em></td>
+<td><em><strong>*返回一年中的第几周*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*DAYOFYEAR(date)*</strong></em></td>
+<td><em><strong>*返回日期是一年中的第几天*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*DAYOFMONTH(date)*</strong></em></td>
+<td><em><strong>*返回日期位于所在月份的第几天*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*DAYOFWEEK(date)*</strong></em></td>
+<td><em>*<em>*返回周几，注意：周日是*</em>*<em>1*</em>*<em>，周一是*</em>*<em>2*</em>*<em>，。。。周六是*</em>*<em>7*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124630312.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124630314.png" alt="img"></p>
+<h3 id="日期的操作函数"><a href="#日期的操作函数" class="headerlink" title="日期的操作函数"></a><strong>日期的操作函数</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*EXTRACT(type FROM date)*</strong></em></td>
+<td><em>*<em>*返回指定日期中特定的部分，*</em>*<em>type*</em>*<em>指定返回的值*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><strong>EXTRACT(type FROM date)函数中type的取值与含义：</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124630326.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124631328.png" alt="img"></p>
+<h3 id="时间和秒钟转换的函数"><a href="#时间和秒钟转换的函数" class="headerlink" title="时间和秒钟转换的函数"></a><strong>时间和秒钟转换的函数</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*TIME_TO_SEC(time)*</strong></em></td>
+<td><em>*<em>*将*</em> *<em>time*</em> *<em>转化为秒并返回结果值。转化的公式为：*</em> *<em>小时*</em>***3600+*</em>*<em>分钟*</em> *<em>*60*</em>*<em>+*</em>*<em>秒*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*SEC_TO_TIME(seconds)*</strong></em></td>
+<td><em><strong>*将** *<em>seconds*</em> **描述转化为包含小时、分钟和秒的时间*</strong></em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124631339.png" alt="img"></p>
+<h3 id="计算日期和时间的函数"><a href="#计算日期和时间的函数" class="headerlink" title="计算日期和时间的函数"></a><strong>计算日期和时间的函数</strong></h3><h4 id="第一组"><a href="#第一组" class="headerlink" title="第一组"></a>第一组</h4><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>*<em>*DATE_ADD(datetime, INTERVAL expr type)*</em>*<em>，*</em> *<em>ADDDATE(date,INTERVAL expr type)*</em>*</em></td>
+<td><em>*<em>*返回与给定日期时间相差*</em>*<em>INTERVAL*</em>*<em>时间段的日期时间*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*DATE_SUB(date,INTERVAL expr type)*</em>*<em>，*</em>*<em>SUBDATE(date,INTERVAL expr type)*</em>*</em></td>
+<td><em>*<em>*返回与*</em>*<em>date*</em>*<em>相差*</em>*<em>INTERVAL*</em>*<em>时间间隔的日期*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><strong>上述函数中type的取值：</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124632352.png" alt="img"></p>
+<p>举例 </p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124632356.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124633358.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124633360.png" alt="img"></p>
+<h4 id="第二组"><a href="#第二组" class="headerlink" title="第二组"></a>第二组</h4><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*ADDTIME(time1,time2)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>time1*</em>*<em>加上*</em>*<em>time2*</em>*<em>的时间。当*</em>*<em>time2*</em>*<em>为一个数字时，代表的是*</em>*<em>秒*</em> *<em>，可以为负数*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*SUBTIME(time1,time2)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>time1*</em>*<em>减去*</em>*<em>time2*</em>*<em>后的时间。当*</em>*<em>time2*</em>*<em>为一个数字时，代表的*</em>*<em>是*</em> *<em>秒*</em> *<em>，可以为负数*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*DATEDIFF(date1,date2)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>date1 - date2*</em>*<em>的日期间隔天数*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TIMEDIFF(time1, time2)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>time1 - time2*</em>*<em>的时间间隔*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*FROM_DAYS(N)*</strong></em></td>
+<td><em>*<em>*返回从*</em>*<em>0000*</em>*<em>年*</em>*<em>1*</em>*<em>月*</em>*<em>1*</em>*<em>日起，*</em>*<em>N*</em>*<em>天以后的日期*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TO_DAYS(date)*</strong></em></td>
+<td><em>*<em>*返回日期*</em>*<em>date*</em>*<em>距离*</em>*<em>0000*</em>*<em>年*</em>*<em>1*</em>*<em>月*</em>*<em>1*</em>*<em>日的天数*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LAST_DAY(date)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>date*</em>*<em>所在月份的最后一天的日期*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*MAKEDATE(year,n)*</strong></em></td>
+<td><em><strong>*针对给定年份与所在年份中的天数返回一个日期*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*MAKETIME(hour,minute,second)*</strong></em></td>
+<td><em><strong>*将给定的小时、分钟和秒组合成时间并返回*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*PERIOD_ADD(time,n)*</strong></em></td>
+<td><em>*<em>*返回*</em>*<em>time*</em>*<em>加上*</em>*<em>n*</em>*<em>后的时间*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124633377.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124634379.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124634381.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124634383.png" alt="img"></p>
+<h3 id="日期的格式化与解析"><a href="#日期的格式化与解析" class="headerlink" title="日期的格式化与解析"></a><strong>日期的格式化与解析</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*DATE_FORMAT(date,fmt)*</strong></em></td>
+<td><em>*<em>*按照字符串*</em>*<em>fmt*</em>*<em>格式化日期*</em>*<em>date*</em>*<em>值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TIME_FORMAT(time,fmt)*</strong></em></td>
+<td><em>*<em>*按照字符串*</em>*<em>fmt*</em>*<em>格式化时间*</em>*<em>time*</em>*<em>值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*GET_FORMAT(date_type,format_type)*</strong></em></td>
+<td><em><strong>*返回日期字符串的显示格式*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*STR_TO_DATE(str, fmt)*</strong></em></td>
+<td><em>*<em>*按照字符串*</em>*<em>fmt*</em>*<em>对*</em>*<em>str*</em>*<em>进行解析，解析为一个日期*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><em>*<em>*上述*</em> *<em>非*</em>*<em>GET_FORMAT*</em> *<em>函数中*</em>*<em>fmt*</em>*<em>参数常用的格式符：*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124635396.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124635398.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124636400.png" alt="img"></p>
+<p><em>*<em>*GET_FORMAT*</em>*<em>函数中*</em>*<em>date_type*</em>*<em>和*</em>*<em>format_type*</em>*<em>参数取值如下：*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124636406.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124636408.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124637410.png" alt="img"></p>
+<h2 id="流程控制函数"><a href="#流程控制函数" class="headerlink" title="流程控制函数"></a><strong>流程控制函数</strong></h2><p>​    流程处理函数可以根据不同的条件，执行不同的处理流程，可以在SQL 语句中实现不同的条件选择。</p>
+<p>​    <strong>MySQL中的流程处理函数主要包括</strong> <em>*<em>*IF()*</em>*<em>、*</em>*<em>IFNULL()*</em>*<em>和*</em>*<em>CASE()*</em>*<em>函数。*</em>*</em></p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*IF(value,value1,value2)*</strong></em></td>
+<td><em>*<em>*如果*</em>*<em>value*</em>*<em>的值为*</em>*<em>TRUE*</em>*<em>，返回*</em>*<em>value1*</em>*<em>，否则返回*</em>*<em>value2*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*IFNULL(value1, value2)*</strong></em></td>
+<td><em>*<em>*如果*</em>*<em>value1*</em>*<em>不为*</em>*<em>NULL*</em>*<em>，返回*</em>*<em>value1*</em>*<em>，否则返回*</em>*<em>value2*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*CASE WHEN*</em> *<em>条件*</em>*<em>1 THEN*</em> *<em>结果*</em>*<em>1*</em>*</em><em>*<em>*WHEN*</em> *<em>条件*</em>*<em>2 THEN*</em> *<em>结果*</em>*<em>2*</em>*</em><em><strong>*….*</strong></em><em><strong>*[ELSE resultn] END*</strong></em></td>
+<td><em>*<em>*相当于*</em>*<em>Java*</em>*<em>的*</em>*<em>if…else if…else…*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*CASE expr WHEN*</em> *<em>常量值*</em>*<em>1 THEN*</em> *<em>值*</em>*<em>1*</em>*</em><em>*<em>*WHEN*</em> *<em>常量值*</em>*<em>1 THEN*</em>*<em>值*</em>*<em>1*</em>*</em><em><strong>*….*</strong></em><em>*<em>*[ELSE*</em> *<em>值*</em>*<em>n] END*</em>*</em></td>
+<td><em>*<em>*相当于*</em>*<em>Java*</em>*<em>的*</em>*<em>switch…case…*</em>*</em></td>
+</tr>
+</tbody></table>
+<h3 id="IF-expr1-expr2-expr3"><a href="#IF-expr1-expr2-expr3" class="headerlink" title="IF(expr1,expr2,expr3):"></a><strong>IF(expr1,expr2,expr3):</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124637427.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124637429.png" alt="img"></p>
+<h3 id="IFNULL-expr1-expr2"><a href="#IFNULL-expr1-expr2" class="headerlink" title="IFNULL(expr1,expr2):"></a>IFNULL(expr1,expr2):</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124638435.png" alt="img"></p>
+<h3 id="CASE-WHEN-…-THEN-…-WHEN-…-THEN-……ELSE-…-END"><a href="#CASE-WHEN-…-THEN-…-WHEN-…-THEN-……ELSE-…-END" class="headerlink" title="CASE WHEN … THEN … WHEN … THEN ……ELSE … END"></a>CASE WHEN … THEN … WHEN … THEN ……ELSE … END</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124638439.png" alt="img"></p>
+<p> <strong>也可以省略ELSE…</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124639443.png" alt="img"></p>
+<h3 id="CASE-…-WHEN-…-THEN-…-WHEN-…-THEN-……ELSE-…-END"><a href="#CASE-…-WHEN-…-THEN-…-WHEN-…-THEN-……ELSE-…-END" class="headerlink" title="CASE … WHEN … THEN … WHEN … THEN ……ELSE … END"></a>CASE … WHEN … THEN … WHEN … THEN ……ELSE … END</h3><p>要求1：</p>
+<p>​    查询部门号，<br>​    若部门号为 10, 则打印其工资的 1.1 倍,<br>​    20 号部门, 则打印其工资的 1.2 倍,<br>​    30 号部门打印其工资的 1.3 倍数,<br>​    其他部门打印其工资的 1.4 倍数</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124640455.png" alt="img"></p>
+<p>要求2：</p>
+<p>​    查询部门号为 10,20, 30 的员工信息,<br>​    若部门号为 10, 则打印其工资的 1.1 倍,<br>​    20 号部门, 则打印其工资的 1.2 倍,<br>​    30 号部门打印其工资的 1.3 倍数.<br>   <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124640465.png" alt="img"></p>
+<h2 id="加密与解密函数"><a href="#加密与解密函数" class="headerlink" title="加密与解密函数"></a><strong>加密与解密函数</strong></h2><p>​    加密与解密函数主要用于对数据库中的数据进行加密和解密处理，以防止数据被他人窃取。这些函数在保证数据库安全时非常有用。</p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>用法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*PASSWORD(str)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>str*</em>*<em>的加密版本，*</em>*<em>41*</em>*<em>位长的字符串。加密结果*</em> *<em>不可*</em>*<em>逆*</em> *<em>，常用于用户的密码加密*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*MD5(str)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>str*</em>*<em>的*</em>*<em>md5*</em>*<em>加密后的值，也是一种加密方式。若参数为*</em>*<em>NULL*</em>*<em>，则会返回*</em>*<em>NULL*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*SHA(str)*</strong></em></td>
+<td><em>*<em>*从原明文密码*</em>*<em>str*</em>*<em>计算并返回加密后的密码字符串，当参数为*</em>*<em>NULL*</em>*<em>时，返回*</em>*<em>NULL*</em>*<em>。*</em> *<em>SHA*</em>*<em>加密算法比*</em>*<em>MD5*</em>*<em>更加安全*</em> *<em>。*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ENCODE(value,password_seed)*</strong></em></td>
+<td><em>*<em>*返回使用*</em>*<em>password_seed*</em>*<em>作为加密密码加密*</em>*<em>value*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*DECODE(value,password_seed)*</strong></em></td>
+<td><em>*<em>*返回使用*</em>*<em>password_seed*</em>*<em>作为加密密码解密*</em>*<em>value*</em>*</em></td>
+</tr>
+</tbody></table>
+<p>​    可以看到，ENCODE(value,password_seed)函数与DECODE(value,password_seed)函数互为反函数。 <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124640481.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124641483.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124641485.png" alt="img"></p>
+<h2 id="MySQL信息函数"><a href="#MySQL信息函数" class="headerlink" title="MySQL信息函数"></a><strong>MySQL信息函数</strong></h2><p>​    MySQL中内置了一些可以查询 MySQL 信息的函数，这些函数主要用于帮助数据库开发或运维人员更好地对数据库进行维护工作。</p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*VERSION()*</strong></em></td>
+<td><em>*<em>*返回当前*</em>*<em>MySQL*</em>*<em>的版本号*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*CONNECTION_ID()*</strong></em></td>
+<td><em>*<em>*返回当前*</em>*<em>MySQL*</em>*<em>服务器的连接数*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*DATABASE()*</em>*<em>，*</em>*<em>SCHEMA()*</em>*</em></td>
+<td><em>*<em>*返回*</em>*<em>MySQL*</em>*<em>命令行当前所在的数据库*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*USER()*</em>*<em>，*</em>*<em>CURRENT_USER()*</em>*<em>、*</em>*<em>SYSTEM_USER()*</em>*<em>，*</em>*<em>SESSION_USER()*</em>*</em></td>
+<td><em>*<em>*返回当前连接*</em>*<em>MySQL*</em>*<em>的用户名，返回结果格式为*</em>*<em>“*</em>*<em>主机名*</em>**@*</em>*<em>用户名*</em>*<em>”*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*CHARSET(value)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>value*</em>*<em>自变量的字符集*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*COLLATION(value)*</strong></em></td>
+<td><em>*<em>*返回字符串*</em>*<em>value*</em>*<em>的比较规则*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124641502.png" alt="img"></p>
+<h2 id="其他函数"><a href="#其他函数" class="headerlink" title="其他函数"></a><strong>其他函数</strong></h2><p>​    MySQL中有些函数无法对其进行具体的分类，但是这些函数在 MySQL 的开发和运维过程中也是不容忽视的。</p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*函数*</strong></em></th>
+<th><em><strong>*用法*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*FORMAT(value,n)*</strong></em></td>
+<td><em>*<em>*返回对数字*</em>*<em>value*</em>*<em>进行格式化后的结果数据。*</em>*<em>n*</em>*<em>表示*</em> *<em>四舍五入*</em> *<em>后保留到小数点后*</em>*<em>n位.*</em>*<em>如果*</em>*<em>n*</em>*<em>的值小于或者等于*</em>*<em>0*</em>*<em>，则只保留整数部分*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*CONV(value,from,to)*</strong></em></td>
+<td><em>*<em>*将*</em>*<em>value*</em>*<em>的值进行不同进制之间的转换*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*INET_ATON(ipvalue)*</strong></em></td>
+<td><em>*<em>*将以点分隔的*</em>*<em>IP*</em>*<em>地址转化为一个数字*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*INET_NTOA(value)*</strong></em></td>
+<td><em>*<em>*将数字形式的*</em>*<em>IP*</em>*<em>地址转化为以点分隔的*</em>*<em>IP*</em>*<em>地址*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*BENCHMARK(n,expr)*</strong></em></td>
+<td><em>*<em>*将表达式*</em>*<em>expr*</em>*<em>重复执行*</em>*<em>n*</em>*<em>次。用于测试*</em>*<em>MySQL*</em>*<em>处理*</em>*<em>expr*</em>*<em>表达式所耗费的时间*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*CONVERT(value USING char_code)*</strong></em></td>
+<td><em>*<em>*将*</em>*<em>value*</em>*<em>所使用的字符编码修改为*</em>*<em>char_code*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124642517.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124642519.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124642521.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124643523.png" alt="img"></p>
+<h2 id="练习"><a href="#练习" class="headerlink" title="练习"></a>练习</h2><h3 id="显示系统时间-注：日期-时间"><a href="#显示系统时间-注：日期-时间" class="headerlink" title="显示系统时间(注：日期+时间)"></a>显示系统时间(注：日期+时间)</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124643531.png" alt="img"></p>
+<h3 id="查询员工号，姓名，工资，以及工资提高百分之20-后的结果（new-salary）"><a href="#查询员工号，姓名，工资，以及工资提高百分之20-后的结果（new-salary）" class="headerlink" title="查询员工号，姓名，工资，以及工资提高百分之20%后的结果（new salary）"></a>查询员工号，姓名，工资，以及工资提高百分之20%后的结果（new salary）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124643537.png" alt="img"></p>
+<h3 id="将员工的姓名按首字母排序，并写出姓名的长度（length）"><a href="#将员工的姓名按首字母排序，并写出姓名的长度（length）" class="headerlink" title="将员工的姓名按首字母排序，并写出姓名的长度（length）"></a>将员工的姓名按首字母排序，并写出姓名的长度（length）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124644543.png" alt="img"></p>
+<h3 id="查询员工id-last-name-salary，并作为一个列输出，别名为OUT-PUT"><a href="#查询员工id-last-name-salary，并作为一个列输出，别名为OUT-PUT" class="headerlink" title="查询员工id,last_name,salary，并作为一个列输出，别名为OUT_PUT"></a>查询员工id,last_name,salary，并作为一个列输出，别名为OUT_PUT</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124644549.png" alt="img"></p>
+<h3 id="查询公司各员工工作的年数、工作的天数，并按工作年数的降序排序"><a href="#查询公司各员工工作的年数、工作的天数，并按工作年数的降序排序" class="headerlink" title="查询公司各员工工作的年数、工作的天数，并按工作年数的降序排序"></a>查询公司各员工工作的年数、工作的天数，并按工作年数的降序排序</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124645555.png" alt="img"></p>
+<h3 id="查询员工姓名，hire-date-department-id"><a href="#查询员工姓名，hire-date-department-id" class="headerlink" title="查询员工姓名，hire_date , department_id"></a>查询员工姓名，hire_date , department_id</h3><p>​    满足以下条件：雇用时间在 1997 年之后， department_id 为80 或 90 或 110, commission_pct 不为空</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124645563.png" alt="img"></p>
+<h3 id="查询公司中入职超过10000天的员工姓名、入职时间"><a href="#查询公司中入职超过10000天的员工姓名、入职时间" class="headerlink" title="查询公司中入职超过10000天的员工姓名、入职时间"></a>查询公司中入职超过10000天的员工姓名、入职时间</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124646569.png" alt="img"></p>
+<h3 id="做一个查询，产生下面的结果"><a href="#做一个查询，产生下面的结果" class="headerlink" title="做一个查询，产生下面的结果"></a>做一个查询，产生下面的结果</h3><p><last_name> earns <salary> monthly but wants &lt;salary*3&gt;</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124646577.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124647579.png" alt="img"></p>
+<h3 id="使用case-when，按照下面的条件："><a href="#使用case-when，按照下面的条件：" class="headerlink" title="使用case-when，按照下面的条件："></a>使用case-when，按照下面的条件：</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124647585.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124647587.png" alt="img"></p>
+<h1 id="MySQL-聚合函数"><a href="#MySQL-聚合函数" class="headerlink" title="MySQL 聚合函数"></a>MySQL 聚合函数</h1><h2 id="聚合函数介绍及常见的聚合函数"><a href="#聚合函数介绍及常见的聚合函数" class="headerlink" title="聚合函数介绍及常见的聚合函数"></a><strong>聚合函数介绍及常见的聚合函数</strong></h2><p><strong>什么是聚合函数</strong></p>
+<p>​    聚合函数作用于一组数据，并对一组数据返回一个值。</p>
+<p><strong>常见的聚合函数类型</strong></p>
+<p>​    <strong>AVG()</strong></p>
+<p>​    <strong>SUM()</strong></p>
+<p>​    <strong>MAX()</strong></p>
+<p>​    <strong>MIN()</strong></p>
+<p>​    <strong>COUNT()</strong></p>
+<p><em><strong>*聚合函数语法*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124648613.png" alt="img"></p>
+<p>​     <strong>在MySQL中，聚合函数不能嵌套调用。比如不能出现类似“SUM(AVG(字段名称))”形式的调用。</strong></p>
+<h3 id="AVG和SUM函数"><a href="#AVG和SUM函数" class="headerlink" title="AVG和SUM函数"></a><strong>AVG和SUM函数</strong></h3><p>​    可以对<strong>数值型数据</strong>使用AVG 和 SUM 函数。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124648621.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124648623.png" alt="img"></p>
+<h3 id="MIN和MAX函数"><a href="#MIN和MAX函数" class="headerlink" title="MIN和MAX函数"></a><strong>MIN和MAX函数</strong></h3><p>​    可以对 <strong>任意数据类型</strong> 的数据使用 MIN 和 MAX 函数。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124649631.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124649633.png" alt="img"></p>
+<h3 id="COUNT函数"><a href="#COUNT函数" class="headerlink" title="COUNT函数"></a><strong>COUNT函数</strong></h3><p>​    <strong>COUNT(*)返回表中记录总数，适用于</strong> <em>*<em>*任意数据类型*</em>*<em>。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124650641.png" alt="img"></p>
+<p> 如果计算表中有多少条记录，如何实现：</p>
+<p>​    方式1：COUNT(*)</p>
+<p>​    方式2：COUNT(常数)，如COUNT(1)</p>
+<p>​    方式3：OCUNT(列名)：<strong>不一定对！</strong></p>
+<p><em>*<em>*COUNT(expr)*</em> *<em>返回*</em>*<em>expr*</em>*<em>不为空*</em>*<em>的记录总数。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124650657.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124651659.png" alt="img"></p>
+<p><strong>公式：AVG &#x3D; SUM &#x2F; COUNT 其中AVG,SUM,COUNT都是不计算NULL值的</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124651665.png" alt="img"></p>
+<p> <strong>需求：计算公司中的平均奖金率</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124652671.png" alt="img"></p>
+<p><strong>问题：用</strong> <strong>count(*)</strong> <strong>，</strong> <strong>count(1)</strong> <strong>，</strong> <strong>count(</strong> <strong>列名</strong> <strong>)</strong> <strong>谁好呢</strong> <strong>?</strong></p>
+<p>​    其实，对于MyISAM 引擎的表是没有区别的。这种引擎内部有一计数器在维护着行数。</p>
+<p>Innodb 引擎的表用 count(*),count(1) 直接读行数，复杂度是 O(n) ，因为 innodb 真的要去数一遍。但好 于具体的count( 列名 ) 。</p>
+<p><strong>问题：能不能使用</strong> <strong>count(</strong> <strong>列名</strong> <strong>)</strong> <strong>替换</strong> <strong>count(*)?</strong></p>
+<p>​    不要使用 count( 列名 ) 来替代 count(<em>) ， count(</em>) 是 SQL92 定义的标准统计行数的语法，跟数 据库无关，跟 NULL 和非 NULL 无关。</p>
+<p>​    说明：count(*) 会统计值为 NULL 的行，而 count( 列名 ) 不会统计此列为 NULL 值的行。</p>
+<h2 id="GROUP-BY"><a href="#GROUP-BY" class="headerlink" title="GROUP BY"></a><strong>GROUP BY</strong></h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a><strong>基本使用</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124652691.png" alt="img"></p>
+<p> <strong>可以使用<strong><strong>GROUP BY</strong></strong>子句将表中的数据分成若干组:</strong></p>
+<p>​    <strong>SELECT</strong> <em><strong>*column, group_function(column)*</strong></em></p>
+<p>​    <em><strong>*FROM table*</strong></em></p>
+<p>​    <em>*<em>*[*</em>*<em>WHERE*</em> *<em>condition]*</em>*</em></p>
+<p>​    <em>*<em>*[*</em>*<em>GROUP BY*</em> *<em>group_by_expression]*</em>*</em></p>
+<p>​    <em>*<em>*[*</em>*<em>ORDER BY*</em> *<em>column];*</em>*</em></p>
+<p>​    <em>*<em>*[*</em>*<em>LIMITE*</em>*</em> [位置偏移量,] 行数 <em><strong>*]*</strong></em></p>
+<p><strong>注意：</strong> <strong>WHERE</strong> <strong>一定放在</strong> <strong>FROM</strong> <strong>后面</strong></p>
+<p>​    <strong>需求：查询各个部门的平均工资</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124653711.png" alt="img"></p>
+<p>​     <strong>需求：查询各个部门的平均工资、最高工资、工资总和、人员个数</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124654717.png" alt="img"></p>
+<p> <strong>注意：在SELECT列表中所有未包含在组函数中的列都应该包含在 GROUP BY子句中</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124655721.png" alt="img"></p>
+<p> 可以输出数据，但是该数据是错误的</p>
+<h3 id="使用多个列分组"><a href="#使用多个列分组" class="headerlink" title="使用多个列分组"></a><strong>使用多个列分组</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124655729.png" alt="img"></p>
+<p>​    <strong>需求1：查询各个department_id中各个job_id的平均工资</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124655735.png" alt="img"></p>
+<p>​     <strong>需求2：查询各个job_id中各个department_id的平均工资</strong><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124656737.png" alt="img"></p>
+<p> 可以看出：需求1与需求2输出的结果是相同的。</p>
+<h3 id="GROUP-BY中使用WITH-ROLLUP"><a href="#GROUP-BY中使用WITH-ROLLUP" class="headerlink" title="GROUP BY中使用WITH ROLLUP"></a><strong>GROUP BY中使用WITH ROLLUP</strong></h3><p>​    使用 WITH ROLLUP 关键字之后，在所有查询出的分组记录之后增加一条记录，该记录计算查询出的所有记录的总和，即统计记录数量。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124656747.png" alt="img"></p>
+<p> <strong>注意：当使用ROLLUP时，最好不要同时使用ORDER BY子句进行结果排序，容易造成数据紊乱。</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124657751.png" alt="img"></p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a><strong>结论</strong></h3><p><strong>结论1：SELECT中出现的非函数字段必须声明在GROUP BY 中。</strong></p>
+<p>​       <strong>反之，GROUP BY 中声明的字段可以不出现在SELECT 中。</strong></p>
+<p><strong>结论2：GROUP BY 声明在FROM 后面、WHERE后面、ORDER BY 前面、LIMIT前面****。</strong></p>
+<p><strong>结论3：当使用ROLLUP时，最好不要同时使用ORDER BY子句进行结果排序，容易造成数</strong></p>
+<p>​       <strong>据紊乱。</strong></p>
+<h1 id="MySQL-子查询"><a href="#MySQL-子查询" class="headerlink" title="MySQL 子查询"></a>MySQL 子查询</h1><h2 id="子查询介绍"><a href="#子查询介绍" class="headerlink" title="子查询介绍"></a>子查询介绍</h2><p>​    子查询指一个查询语句嵌套在另一个查询语句内部的查询，这个特性从MySQL 4.1开始引入。</p>
+<p>​    SQL 中子查询的使用大大增强了 SELECT 查询的能力，因为很多时候查询需要从结果集中获取数据，或者需要从同一个表中先计算得出一个数据结果，然后与这个数据结果（可能是某个标量，也可能是某个集合）进行比较。</p>
+<h2 id="需求分析与问题解决"><a href="#需求分析与问题解决" class="headerlink" title="需求分析与问题解决"></a><strong>需求分析与问题解决</strong></h2><h3 id="实际问题"><a href="#实际问题" class="headerlink" title="实际问题"></a><strong>实际问题</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124657779.png" alt="img"></p>
+<p><strong>需求：谁的工资比 Abel高?</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124658785.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124658787.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124659789.png" alt="img"></p>
+<p> <strong>查询称谓：括号外的查询称为：外查询（主查询）</strong></p>
+<p>​          <strong>括号内的查询称为：内查询（子查询）</strong></p>
+<p><strong>问题：</strong> 方式2与方式3有好坏之分吗？（方式1为两次查询，不推荐使用）</p>
+<p><strong>解答：</strong> 自连接方式好！</p>
+<p>​    题目中可以使用子查询，也可以使用自连接。一般情况建议你使用自连接，因为在许多 DBMS 的处理过 程中，对于自连接的处理速度要比子查询快得多。</p>
+<p>​    可以这样理解：子查询实际上是通过未知表进行查询后的条件判断，而自连接是通过已知的自身数据表进行条件判断，因此在大部分 DBMS 中都对自连接处理进行了优化。</p>
+<h3 id="子查询的基本使用"><a href="#子查询的基本使用" class="headerlink" title="子查询的基本使用"></a><strong>子查询的基本使用</strong></h3><p>​    <em><strong>*子查询的基本语法结构：*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124659807.png" alt="img"></p>
+<p>​    <em><strong>*子查询（内查询）在主查询之前一次执行完成。*</strong></em></p>
+<p>​    <em><strong>*子查询的结果被主查询（外查询）使用 。*</strong></em></p>
+<p>​    </p>
+<p>​    <strong>注意事项</strong></p>
+<p>​        <em><strong>*1.子查询要包含在括号内*</strong></em></p>
+<p>​        <em><strong>*2.将子查询放在比较条件的右侧*</strong></em></p>
+<p>​        <em><strong>*3.单行操作符对应单行子查询，多行操作符对应多行子查询*</strong></em></p>
+<h3 id="子查询的分类"><a href="#子查询的分类" class="headerlink" title="子查询的分类"></a><strong>子查询的分类</strong></h3><h3 id="分类方式1："><a href="#分类方式1：" class="headerlink" title="分类方式1："></a><strong>分类方式<strong><strong>1</strong></strong>：</strong></h3><p>我们按内查询的<strong>结果返回一条还是多条记录</strong>，将子查询分为 单行子查询 、 多行子查询 。</p>
+<p><em><strong>*单行子查询：*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124659831.png" alt="img"></p>
+<p><em><strong>*多行子查询：*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124700837.png" alt="img"></p>
+<h3 id="分类方式2："><a href="#分类方式2：" class="headerlink" title="分类方式2："></a><strong>分类方式<strong><strong>2</strong></strong>：</strong></h3><p>​    我们按内查询<strong>是否被执行多次</strong>，将子查询划分为 相关 ( 或关联 ) 子查询 和 不相关 ( 或非关联 ) 子查询 。</p>
+<p>​    子查询从数据表中查询了数据结果，如果这个数据结果只执行一次，然后这个数据结果作为主查询的条件进行执行，那么这样的子查询叫做不相关子查询。</p>
+<p>​    同样，如果子查询需要执行多次，即采用循环的方式，先从外部查询开始，每次都传入子查询进行查询，然后再将结果反馈给外部，这种嵌套的执行方式就称为相关子查询。</p>
+<h2 id="单行子查询"><a href="#单行子查询" class="headerlink" title="单行子查询"></a><strong>单行子查询</strong></h2><h3 id="单行比较操作符"><a href="#单行比较操作符" class="headerlink" title="单行比较操作符"></a><strong>单行比较操作符</strong></h3><table>
+<thead>
+<tr>
+<th><strong>操作符</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*&#x3D;*</strong></em></td>
+<td><em><strong>*equal to*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&gt;*</strong></em></td>
+<td><em><strong>*greater than*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&gt;&#x3D;*</strong></em></td>
+<td><em><strong>*greater than or equal to*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&lt;*</strong></em></td>
+<td><em><strong>*less than*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&lt;&#x3D;*</strong></em></td>
+<td><em><strong>*less than or equal to*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&lt;&gt;*</strong></em></td>
+<td><em><strong>*not equal to*</strong></em></td>
+</tr>
+</tbody></table>
+<h3 id="代码示例-1"><a href="#代码示例-1" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><h3 id="需求：查询工资大于149号员工工资的员工的信息"><a href="#需求：查询工资大于149号员工工资的员工的信息" class="headerlink" title="需求：查询工资大于149号员工工资的员工的信息"></a><strong>需求：查询工资大于<strong><strong>149</strong></strong>号员工工资的员工的信息</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124700866.png" alt="img"></p>
+<h3 id="-1"><a href="#-1" class="headerlink" title=""></a></h3><h3 id="需求：返回job-id与141号员工相同，salary比143号员工多的员工姓名，"><a href="#需求：返回job-id与141号员工相同，salary比143号员工多的员工姓名，" class="headerlink" title="需求：返回job_id与141号员工相同，salary比143号员工多的员工姓名，"></a><strong>需求：返回<strong><strong>job_id</strong></strong>与<strong><strong>141</strong></strong>号员工相同，<strong><strong>salary</strong></strong>比<strong><strong>143</strong></strong>号员工多的员工姓名，</strong></h3><h3 id="job-id-和工资"><a href="#job-id-和工资" class="headerlink" title="job_id****和工资"></a><strong>job_id****和工资</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124700874.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124701876.png" alt="img"></p>
+<h3 id="需求：返回公司工资最少的员工的last-name-job-id和-salary"><a href="#需求：返回公司工资最少的员工的last-name-job-id和-salary" class="headerlink" title="需求：返回公司工资最少的员工的last_name,job_id和****salary"></a><strong>需求：返回公司工资最少的员工的<strong><strong>last_name,job_id</strong></strong>和****salary</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124701880.png" alt="img"></p>
+<h3 id="需求：查询与141号或174号员工的manager-id和department-id相同的其他员工"><a href="#需求：查询与141号或174号员工的manager-id和department-id相同的其他员工" class="headerlink" title="需求：查询与141号或174号员工的manager_id和department_id相同的其他员工"></a><strong>需求：查询与<strong><strong>141</strong></strong>号或<strong><strong>174</strong></strong>号员工的<strong><strong>manager_id</strong></strong>和<strong><strong>department_id</strong></strong>相同的其他员工</strong></h3><h3 id="的employee-id，manager-id，department-id"><a href="#的employee-id，manager-id，department-id" class="headerlink" title="的employee_id，manager_id，department_id"></a><strong>的employee_id<strong><strong>，</strong></strong>manager_id<strong><strong>，</strong></strong>department_id</strong></h3><p>实现方式 1 ：不成对比较</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124701890.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124702892.png" alt="img"></p>
+<p> 实现方式2：成对比较</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124702896.png" alt="img"></p>
+<h3 id="HAVING-中的子查询"><a href="#HAVING-中的子查询" class="headerlink" title="HAVING 中的子查询"></a><strong>HAVING 中的子查询</strong></h3><p>​    <strong>首先执行子查询。</strong></p>
+<p>​    <em><strong>*向主查询中的HAVING** **子句返回结果。*</strong></em></p>
+<h3 id="需求：查询最低工资大于110号部门最低工资的部门id和其最低工资"><a href="#需求：查询最低工资大于110号部门最低工资的部门id和其最低工资" class="headerlink" title="需求：查询最低工资大于110号部门最低工资的部门id和其最低工资"></a><strong>需求：查询最低工资大于11<strong><strong>0</strong></strong>号部门最低工资的部门<strong><strong>id</strong></strong>和其最低工资</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124702908.png" alt="img"></p>
+<h3 id="CASE中的子查询"><a href="#CASE中的子查询" class="headerlink" title="CASE中的子查询"></a><strong>CASE中的子查询</strong></h3><p>​    在CASE 表达式中使用单列子查询：</p>
+<h3 id="需求：显式员工的employee-id-last-name和location。其中，若员工"><a href="#需求：显式员工的employee-id-last-name和location。其中，若员工" class="headerlink" title="需求：显式员工的employee_id,last_name和location。其中，若员工"></a><strong>需求：显式员工的<strong><strong>employee_id,last_name</strong></strong>和<strong><strong>location</strong></strong>。其中，若员工</strong></h3><h3 id="department-id与location-id为1800的department-id相同，则-location"><a href="#department-id与location-id为1800的department-id相同，则-location" class="headerlink" title="department_id与location_id为1800的department_id相同，则****location"></a><strong>department_id与<strong><strong>location_id</strong></strong>为<strong><strong>1800</strong></strong>的<strong><strong>department_id</strong></strong>相同，则****location</strong></h3><h3 id="为’Canada’，其余则为’USA’-。"><a href="#为’Canada’，其余则为’USA’-。" class="headerlink" title="为’Canada’，其余则为’USA’****。"></a><strong>为’Canada’<strong><strong>，其余则为</strong></strong>’USA’****。</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124703922.png" alt="img"></p>
+<h3 id="子查询中的空值问题"><a href="#子查询中的空值问题" class="headerlink" title="子查询中的空值问题"></a><strong>子查询中的空值问题</strong></h3><h2 id="-2"><a href="#-2" class="headerlink" title=""></a><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124703928.png" alt="img"></h2><p><strong>原因：*<em>子查询不返回任何行*</em></strong> </p>
+<h2 id="-3"><a href="#-3" class="headerlink" title=""></a><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124703932.png" alt="img"></h2><h3 id="非法使用子查询"><a href="#非法使用子查询" class="headerlink" title="非法使用子查询"></a><strong>非法使用子查询</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124704936.png" alt="img"></p>
+<p> <strong>原因：*<em>多行子查询使用单行比较符*</em></strong></p>
+<h2 id="多行子查询"><a href="#多行子查询" class="headerlink" title="多行子查询"></a><strong>多行子查询</strong></h2><p>​    <strong>也称为集合比较子查询</strong></p>
+<p>​    <em><strong>*内查询返回多行*</strong></em></p>
+<p>​    <em><strong>*使用多行比较操作符*</strong></em></p>
+<h3 id="多行比较操作符"><a href="#多行比较操作符" class="headerlink" title="多行比较操作符"></a><strong>多行比较操作符</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*操作符*</strong></em></th>
+<th><em><strong>*含义*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*IN*</strong></em></td>
+<td><em>*<em>*等于列表中的*</em>*<em>任意一个*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ANY*</strong></em></td>
+<td><em>*<em>*需要和单行比较操作符一起使用，和子查询返回的*</em>*<em>某一个*</em>*<em>值比较*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ALL*</strong></em></td>
+<td><em>*<em>*需要和单行比较操作符一起使用，和子查询返回的*</em>*<em>所有*</em>*<em>值比较*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*SOME*</strong></em></td>
+<td><em>*<em>*实际上是*</em>*<em>ANY*</em>*<em>的别名，作用相同，一般常使用*</em>*<em>ANY*</em>*</em></td>
+</tr>
+</tbody></table>
+<h3 id="代码示例-2"><a href="#代码示例-2" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><h3 id="需求：查询每个部门中最低工资的员工号和姓名"><a href="#需求：查询每个部门中最低工资的员工号和姓名" class="headerlink" title="需求：查询每个部门中最低工资的员工号和姓名"></a><strong>需求：查询每个部门中最低工资的员工号和姓名</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124704961.png" alt="img"></p>
+<h3 id="需求：返回其它job-id中比job-id为‘IT-PROG’部门任一工资低的员工的"><a href="#需求：返回其它job-id中比job-id为‘IT-PROG’部门任一工资低的员工的" class="headerlink" title="需求：返回其它job_id中比job_id为‘IT_PROG’部门任一工资低的员工的"></a><strong>需求：返回其它<strong><strong>job_id</strong></strong>中比<strong><strong>job_id</strong></strong>为<strong><strong>‘IT_PROG’</strong></strong>部门任一工资低的员工的</strong></h3><h3 id="员工号、姓名、job-id-以及-salary"><a href="#员工号、姓名、job-id-以及-salary" class="headerlink" title="员工号、姓名、job_id 以及****salary"></a><strong>员工号、姓名、job_id</strong> <strong>以及****salary</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124704969.png" alt="img"></p>
+<h3 id="需求：返回其它job-id中比job-id为‘IT-PROG’部门所有工资都低的员工的"><a href="#需求：返回其它job-id中比job-id为‘IT-PROG’部门所有工资都低的员工的" class="headerlink" title="需求：返回其它job_id中比job_id为‘IT_PROG’部门所有工资都低的员工的"></a><strong>需求：返回其它<strong><strong>job_id</strong></strong>中比<strong><strong>job_id</strong></strong>为<strong><strong>‘IT_PROG’</strong></strong>部门所有工资都低的员工的</strong></h3><h3 id="员工号、姓名、job-id以及salary"><a href="#员工号、姓名、job-id以及salary" class="headerlink" title="员工号、姓名、job_id以及salary"></a><strong>员工号、姓名、job_id<strong><strong>以及</strong></strong>salary</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124705977.png" alt="img"></p>
+<h3 id="需求：查询平均工资最低的部门-id"><a href="#需求：查询平均工资最低的部门-id" class="headerlink" title="需求：查询平均工资最低的部门****id"></a><strong>需求：查询平均工资最低的部门****id</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124705981.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124705983.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124706985.png" alt="img"></p>
+<h3 id="空值问题"><a href="#空值问题" class="headerlink" title="空值问题"></a><strong>空值问题</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124707991.png" alt="img"></p>
+<p> <strong>原因：内查询中存在NULL</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/20221006124707995.png" alt="img"></p>
+<h2 id="相关子查询"><a href="#相关子查询" class="headerlink" title="相关子查询"></a><strong>相关子查询</strong></h2><h3 id="相关子查询执行流程"><a href="#相关子查询执行流程" class="headerlink" title="相关子查询执行流程"></a><strong>相关子查询执行流程</strong></h3><p>​    如果子查询的执行依赖于外部查询，通常情况下都是因为子查询中的表用到了外部的表，并进行了条件关联，因此每执行一次外部查询，子查询都要重新计算一次，这样的子查询就称之为 关联子查询 。</p>
+<p>​    相关子查询按照一行接一行的顺序执行，主查询的每一行都执行一次子查询。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247081005.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247081007.png" alt="img"></p>
+<p> 说明：<strong>子查询中使用主查询中的列</strong></p>
+<h3 id="代码示例-3"><a href="#代码示例-3" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><h3 id="需求：查询员工中工资大于本部门平均工资的员工的last-name-salary和"><a href="#需求：查询员工中工资大于本部门平均工资的员工的last-name-salary和" class="headerlink" title="需求：查询员工中工资大于本部门平均工资的员工的last_name,salary和"></a><strong>需求：查询员工中工资大于本部门平均工资的员工的<strong><strong>last_name,salary</strong></strong>和</strong></h3><h3 id="其department-id"><a href="#其department-id" class="headerlink" title="其department_id"></a><strong>其department_id</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247081019.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247091021.png" alt="img"></p>
+<h3 id="需求：查询员工的-id-salary-按照department-name-排序"><a href="#需求：查询员工的-id-salary-按照department-name-排序" class="headerlink" title="*需求：查询员工的**id,salary,按照department_name* 排序"></a>*<em>需求：查询员工的</em>**<em>id,salary,<strong><strong>按照</strong></strong>department_name</em>* <strong>排序</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247091025.png" alt="img"></p>
+<h3 id="需求：若employees表中employee-id与job-history表中employee-id相同的-数"><a href="#需求：若employees表中employee-id与job-history表中employee-id相同的-数" class="headerlink" title="需求：若employees表中employee_id与job_history表中employee_id相同的****数"></a><strong>需求：若<strong><strong>employees</strong></strong>表中<strong><strong>employee_id</strong></strong>与<strong><strong>job_history</strong></strong>表中<strong><strong>employee_id</strong></strong>相同的****数</strong></h3><h3 id="目不小于2，输出这些相同id的员工的employee-id-last-name和其-job-id"><a href="#目不小于2，输出这些相同id的员工的employee-id-last-name和其-job-id" class="headerlink" title="目不小于2，输出这些相同id的员工的employee_id,last_name和其****job_id"></a><strong>目不小于2，输出这些相同<strong><strong>id</strong></strong>的员工的<strong><strong>employee_id,last_name</strong></strong>和其****job_id</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247111033.png" alt="img"></p>
+<h3 id="EXISTS-与-NOT-EXISTS关键字"><a href="#EXISTS-与-NOT-EXISTS关键字" class="headerlink" title="EXISTS 与 NOT EXISTS关键字"></a><strong>EXISTS 与 NOT EXISTS关键字</strong></h3><p>​    关联子查询通常也会和 EXISTS 操作符一起来使用，用来检查在子查询中是否存在满足条件的行。</p>
+<p>​    <strong>如果在子查询中不存在满足条件的行：</strong></p>
+<p>​        条件返回 FALSE</p>
+<p>​        继续在子查询中查找</p>
+<p>​    <strong>如果在子查询中存在满足条件的行：</strong></p>
+<p>​        不在子查询中继续查找</p>
+<p>​        条件返回 TRUE</p>
+<p>​    NOT EXISTS关键字表示如果不存在某种条件，则返回 TRUE ，否则返回 FALSE 。</p>
+<h3 id="需求：查询公司管理者的employee-id，last-name，job-id，-department-id"><a href="#需求：查询公司管理者的employee-id，last-name，job-id，-department-id" class="headerlink" title="需求：查询公司管理者的employee_id，last_name，job_id，****department_id"></a><strong>需求：查询公司管理者的<strong><strong>employee_id</strong></strong>，<strong><strong>last_name</strong></strong>，<strong><strong>job_id</strong></strong>，****department_id</strong></h3><h3 id="信息"><a href="#信息" class="headerlink" title="信息"></a><strong>信息</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247111057.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247121059.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247121061.png" alt="img"></p>
+<h3 id="需求：查询departments表中，不存在于employees表中的部门的-department-id和department-name"><a href="#需求：查询departments表中，不存在于employees表中的部门的-department-id和department-name" class="headerlink" title="需求：查询departments表中，不存在于employees表中的部门的       department_id和department_name"></a>需求：查询departments表中，不存在于employees表中的部门的       department_id和department_name</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247131065.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247141067.png" alt="img"></p>
+<h3 id="相关更新"><a href="#相关更新" class="headerlink" title="相关更新"></a><strong>相关更新</strong></h3><p><strong>语法：</strong></p>
+<p>​    <em><strong>*UPDATE** **table1 alias1*</strong></em></p>
+<p>​    <em>*<em>*SET*</em> *<em>column &#x3D; (*</em>*<em>SELECT*</em> *<em>expression*</em>*</em></p>
+<p>​                 <em><strong>*FROM** **table2 alias2*</strong></em></p>
+<p>​                 <em>*<em>*WHERE*</em> *<em>alias1*</em>**.column*</em> *<em>&#x3D; alias2*</em>*<em>.column*</em>*<em>);*</em>**</p>
+<p><em><strong>*使用相关子查询依据一个表中的数据更新另一个表的数据。*</strong></em></p>
+<h3 id="需求：在employees中增加一个department-name字段，数据为员工对应的"><a href="#需求：在employees中增加一个department-name字段，数据为员工对应的" class="headerlink" title="需求：在employees中增加一个department_name字段，数据为员工对应的"></a><strong>需求：在<strong><strong>employees</strong></strong>中增加一个<strong><strong>department_name</strong></strong>字段，数据为员工对应的</strong></h3><h3 id="部门名称"><a href="#部门名称" class="headerlink" title="部门名称"></a><strong>部门名称</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247141087.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247141089.png" alt="img"></p>
+<h3 id="相关删除"><a href="#相关删除" class="headerlink" title="相关删除"></a><strong>相关删除</strong></h3><p><strong>语法：</strong></p>
+<p>​    DELETE FROM table1 alias1</p>
+<p>​    WHERE column operator ( SELECT expression</p>
+<p>​                         FROM table2 alias2</p>
+<p>​                         WHERE alias1 .column &#x3D; alias2 .column );</p>
+<p><strong>题目：删除表</strong> <strong>employees</strong> <strong>中，其与</strong> <strong>emp_history</strong> <strong>表皆有的数据</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247151107.png" alt="img"></p>
+<h2 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h2><p><strong>结论：在SELECT语句中，出GROUP BY 与LIMIT之外，其余地方都可以声明子查询</strong></p>
+<h2 id="练习-1"><a href="#练习-1" class="headerlink" title="练习"></a>练习</h2><h3 id="查询和Zlotkey相同部门的员工姓名和工资"><a href="#查询和Zlotkey相同部门的员工姓名和工资" class="headerlink" title="查询和Zlotkey相同部门的员工姓名和工资"></a>查询和Zlotkey相同部门的员工姓名和工资</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247151119.png" alt="img"></p>
+<h3 id="查询工资比公司平均工资高的员工的员工号，姓名和工资。"><a href="#查询工资比公司平均工资高的员工的员工号，姓名和工资。" class="headerlink" title="查询工资比公司平均工资高的员工的员工号，姓名和工资。"></a>查询工资比公司平均工资高的员工的员工号，姓名和工资。</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247151123.png" alt="img"></p>
+<h3 id="选择工资大于所有JOB-ID-x3D-‘SA-MAN’的员工的工资的员工的last-name-job-id-salary"><a href="#选择工资大于所有JOB-ID-x3D-‘SA-MAN’的员工的工资的员工的last-name-job-id-salary" class="headerlink" title="选择工资大于所有JOB_ID &#x3D; ‘SA_MAN’的员工的工资的员工的last_name, job_id, salary"></a>选择工资大于所有JOB_ID &#x3D; ‘SA_MAN’的员工的工资的员工的last_name, job_id, salary</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247161127.png" alt="img"></p>
+<h3 id="查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名"><a href="#查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名" class="headerlink" title="查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名"></a>查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247161133.png" alt="img"></p>
+<h3 id="查询在部门的location-id为1700的部门工作的员工的员工号"><a href="#查询在部门的location-id为1700的部门工作的员工的员工号" class="headerlink" title="查询在部门的location_id为1700的部门工作的员工的员工号"></a>查询在部门的location_id为1700的部门工作的员工的员工号</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247171139.png" alt="img"></p>
+<h3 id="查询管理者是King的员工姓名和工资"><a href="#查询管理者是King的员工姓名和工资" class="headerlink" title="查询管理者是King的员工姓名和工资"></a>查询管理者是King的员工姓名和工资</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247171145.png" alt="img"></p>
+<h3 id="查询工资最低的员工信息-last-name-salary"><a href="#查询工资最低的员工信息-last-name-salary" class="headerlink" title="查询工资最低的员工信息: last_name, salary"></a>查询工资最低的员工信息: last_name, salary</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247181151.png" alt="img"></p>
+<h3 id="查询平均工资最低的部门信息"><a href="#查询平均工资最低的部门信息" class="headerlink" title="查询平均工资最低的部门信息"></a>查询平均工资最低的部门信息</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247181157.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247181159.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247191161.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247191163.png" alt="img"></p>
+<h3 id="查询平均工资最低的部门信息和该部门的平均工资（相关子查询）"><a href="#查询平均工资最低的部门信息和该部门的平均工资（相关子查询）" class="headerlink" title="查询平均工资最低的部门信息和该部门的平均工资（相关子查询）"></a>查询平均工资最低的部门信息和该部门的平均工资（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247191169.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247201171.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247201173.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247201175.png" alt="img"></p>
+<h3 id="查询平均工资最高的-job-信息"><a href="#查询平均工资最高的-job-信息" class="headerlink" title="查询平均工资最高的 job 信息"></a>查询平均工资最高的 job 信息</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247201179.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247211181.png" alt="img"></p>
+<h3 id="查询平均工资高于公司平均工资的部门有哪些"><a href="#查询平均工资高于公司平均工资的部门有哪些" class="headerlink" title="查询平均工资高于公司平均工资的部门有哪些?"></a>查询平均工资高于公司平均工资的部门有哪些?</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247211187.png" alt="img"></p>
+<h3 id="查询出公司中所有-manager-的详细信息"><a href="#查询出公司中所有-manager-的详细信息" class="headerlink" title="查询出公司中所有 manager 的详细信息"></a>查询出公司中所有 manager 的详细信息</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247221193.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247221195.png" alt="img"></p>
+<h3 id="各个部门中-最高工资中最低的那个部门的-最低工资是多少"><a href="#各个部门中-最高工资中最低的那个部门的-最低工资是多少" class="headerlink" title="各个部门中 最高工资中最低的那个部门的 最低工资是多少?"></a>各个部门中 最高工资中最低的那个部门的 最低工资是多少?</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247221201.png" alt="img"></p>
+<h3 id="查询平均工资最高的部门的-manager-的详细信息-last-name"><a href="#查询平均工资最高的部门的-manager-的详细信息-last-name" class="headerlink" title="查询平均工资最高的部门的 manager 的详细信息: last_name,"></a>查询平均工资最高的部门的 manager 的详细信息: last_name,</h3><h3 id="department-id-email-salary"><a href="#department-id-email-salary" class="headerlink" title="department_id, email, salary"></a>department_id, email, salary</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247231209.png" alt="img"></p>
+<h3 id="查询部门的部门号，其中不包括job-id是”ST-CLERK”的部门号"><a href="#查询部门的部门号，其中不包括job-id是”ST-CLERK”的部门号" class="headerlink" title="查询部门的部门号，其中不包括job_id是”ST_CLERK”的部门号"></a>查询部门的部门号，其中不包括job_id是”ST_CLERK”的部门号</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247231215.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247231217.png" alt="img"> </p>
+<h3 id="选择所有没有管理者的员工的last-name"><a href="#选择所有没有管理者的员工的last-name" class="headerlink" title="选择所有没有管理者的员工的last_name"></a>选择所有没有管理者的员工的last_name</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247241221.png" alt="img"></p>
+<h3 id="查询员工号、姓名、雇用时间、工资，其中员工的管理者为-‘De-Haan’"><a href="#查询员工号、姓名、雇用时间、工资，其中员工的管理者为-‘De-Haan’" class="headerlink" title="查询员工号、姓名、雇用时间、工资，其中员工的管理者为 ‘De Haan’"></a>查询员工号、姓名、雇用时间、工资，其中员工的管理者为 ‘De Haan’</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247241227.png" alt="img"></p>
+<h3 id="查询各部门中工资比本部门平均工资高的员工的员工号-姓名和工资"><a href="#查询各部门中工资比本部门平均工资高的员工的员工号-姓名和工资" class="headerlink" title="查询各部门中工资比本部门平均工资高的员工的员工号, 姓名和工资"></a>查询各部门中工资比本部门平均工资高的员工的员工号, 姓名和工资</h3><h3 id="（相关子查询）"><a href="#（相关子查询）" class="headerlink" title="（相关子查询）"></a>（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247241235.png" alt="img"></p>
+<h3 id="查询每个部门下的部门人数大于-5-的部门名称（相关子查询）"><a href="#查询每个部门下的部门人数大于-5-的部门名称（相关子查询）" class="headerlink" title="查询每个部门下的部门人数大于 5 的部门名称（相关子查询）"></a>查询每个部门下的部门人数大于 5 的部门名称（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247241241.png" alt="img"></p>
+<h3 id="查询每个国家下的部门个数大于-2-的国家编号（相关子查询）"><a href="#查询每个国家下的部门个数大于-2-的国家编号（相关子查询）" class="headerlink" title="查询每个国家下的部门个数大于 2 的国家编号（相关子查询）"></a>查询每个国家下的部门个数大于 2 的国家编号（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247251247.png" alt="img"></p>
+<h2 id="HAVING"><a href="#HAVING" class="headerlink" title="HAVING"></a><strong>HAVING</strong></h2><h3 id="基本使用-1"><a href="#基本使用-1" class="headerlink" title="基本使用"></a><strong>基本使用</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247251253.png" alt="img"></p>
+<p><strong>过滤分组：</strong> <strong>HAVING</strong> <strong>子句</strong></p>
+<p>​    <strong>1. 行已经被分组。</strong></p>
+<p>​    <em><strong>*2. 使用了聚合函数。*</strong></em></p>
+<p>​    <em>*<em>*3. 满足*</em>*<em>HAVING*</em> *<em>子句中条件的分组将被显示。*</em>*</em></p>
+<p>​    <em><strong>*4.** **HAVING 不能单独使用，必须要跟 GROUP BY 一起使用，HAVING要放在GROUP       BY后面 。*</strong></em></p>
+<p>​    <em><strong>*5.如果过滤条件中使用了聚合函数，则必须使用HAVING来替换WHERE。否则，报错。*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247251269.png" alt="img"></p>
+<p> <strong>需求：部门最高工资比10000高的部门</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247251273.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247251275.png" alt="img"></p>
+<h3 id="WHERE和HAVING的对比"><a href="#WHERE和HAVING的对比" class="headerlink" title="WHERE和HAVING的对比"></a>WHERE和HAVING的对比</h3><p><strong>需求：查询部门id为10，20，30，40这4个部门中最高工资的部门信息</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247251283.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247261285.png" alt="img"></p>
+<p><strong>建议使用方法1：其效率更高</strong></p>
+<p><strong>结论：当过滤条件有聚合函数时，则此过滤条件必须声明在HAVING中。</strong></p>
+<p>​      <strong>当过滤条件中没有聚合函数时，则此过滤条件声明在WHERE或HAVING中都可以，</strong></p>
+<p>​        <strong>但是，建议声明在WHERE中。</strong></p>
+<p><em><strong>*WHERE和HAVING的区别*</strong></em></p>
+<p>​    <strong>区别1</strong> <strong>：</strong> <strong>WHERE</strong> <strong>可以直接使用表中的字段作为筛选条件，但不能使用分组中的计算函数作为筛选条件；</strong> <strong>HAVING</strong> <strong>必须要与</strong> <strong>GROUP BY</strong> <strong>配合使用，可以把分组计算的函数和分组字段作为筛选条件。</strong></p>
+<p>​    这决定了，在需要对数据进行分组统计的时候，HAVING 可以完成 WHERE 不能完成的任务。这是因为，在查询语法结构中，WHERE 在 GROUP BY 之前，所以无法对分组结果进行筛选。 HAVING 在 GROUP BY 之后，可以使用分组字段和分组中的计算函数，对分组的结果集进行筛选，这个功能是 WHERE 无法完成的。另外，WHERE 排除的记录不再包括在分组中。</p>
+<p>​    <strong>区别2</strong> <strong>：如果需要通过连接从关联表中获取需要的数据，</strong> <strong>WHERE</strong> <strong>是先筛选后连接，而</strong> <strong>HAVING</strong> <strong>是先连接</strong> <strong>后筛选。</strong></p>
+<p>​     这一点，就决定了在关联查询中， WHERE 比 HAVING 更高效。因为 WHERE 可以先筛选，用一个筛选后的较小数据集和关联表进行连接，这样占用的资源比较少，执行效率也比较高。HAVING 则需要先把结果集准备好，也就是用未被筛选的数据集进行关联，然后对这个大的数据集进行筛选，这样占用的资源就比较多，执行效率也较低。</p>
+<p><em><strong>*小结如下：*</strong></em></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>优点</strong></th>
+<th><strong>缺点</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>WHERE</strong></td>
+<td><em><strong>*先筛选数据再关联，执行效率高*</strong></em></td>
+<td><em><strong>*不能使用分组中的计算函数进行筛选*</strong></em></td>
+</tr>
+<tr>
+<td><strong>HAVING</strong></td>
+<td><em><strong>*可以使用分组中的计算函数*</strong></em></td>
+<td><em><strong>*在最后的结果集中进行筛选，执行效率较低*</strong></em></td>
+</tr>
+</tbody></table>
+<p><strong>开发中的选择：</strong></p>
+<p>​    WHERE 和 HAVING 也不是互相排斥的，我们可以在一个查询里面同时使用 WHERE 和 HAVING 。包含分组统计函数的条件用 HAVING ，普通条件用 WHERE 。这样，我们就既利用了 WHERE 条件的高效快速，又发挥了 HAVING 可以使用包含分组统计函数的查询条件的优点。当数据量特别大的时候，运行效率会有很大的差别。</p>
+<h2 id="SELECT的执行过程"><a href="#SELECT的执行过程" class="headerlink" title="SELECT的执行过程"></a><strong>SELECT的执行过程</strong></h2><h3 id="查询的结构"><a href="#查询的结构" class="headerlink" title="查询的结构"></a><strong>查询的结构</strong></h3><p><em>*<em>*方式*</em>*<em>1*</em>*<em>：（SQL92语法）*</em>*</em></p>
+<p>​    <em>*<em>*SELECT*</em> **…,….,…*</em>**</p>
+<p>​    <em>*<em>*FROM*</em> **…,…,….*</em>**</p>
+<p>​    <em><strong>*WHERE** **多表的连接条件*</strong></em></p>
+<p>​    <em><strong>*AND** **不包含组函数的过滤条件*</strong></em></p>
+<p>​    <em>*<em>*GROUP BY*</em> **…,…*</em>**</p>
+<p>​    <em><strong>*HAVING** **包含组函数的过滤条件*</strong></em></p>
+<p>​    <em>*<em>*ORDER BY*</em> **…*</em> *<em>ASC*</em>*<em>&#x2F;DESC*</em>**</p>
+<p>​    <em>*<em>*LIMIT*</em> **…,…*</em>**</p>
+<p><em>*<em>*方式*</em>*<em>2*</em>*<em>：*</em>*</em></p>
+<p>​    <em>*<em>*SELECT*</em> **…,….,…*</em>**</p>
+<p>​    <em>*<em>*FROM*</em> **…*</em> *<em>JOIN*</em> *<em>…*</em>**</p>
+<p>​    <em><strong>*ON** **多表的连接条件*</strong></em></p>
+<p>​    <em>*<em>*JOIN*</em> **…*</em>**</p>
+<p>​    <em>*<em>*ON*</em> **…*</em>**</p>
+<p>​    <em><strong>*WHERE** **不包含组函数的过滤条件*</strong></em></p>
+<p>​    <em>*<em>*AND*</em>**&#x2F;OR*</em> *<em>不包含组函数的过滤条件*</em>**</p>
+<p>​    <em>*<em>*GROUP BY*</em> **…,…*</em>**</p>
+<p>​    <em><strong>*HAVING** **包含组函数的过滤条件*</strong></em></p>
+<p>​    <em>*<em>*ORDER BY*</em> **…*</em> *<em>ASC*</em>*<em>&#x2F;DESC*</em>**</p>
+<p>​    LIMIT …,…</p>
+<p><em><strong>*其中：*</strong></em></p>
+<p>​    <em>*<em>*（1*</em>*<em>）*</em>*<em>from*</em>*<em>：从哪些表中筛选*</em>*</em></p>
+<p>​    <em>*<em>*（*</em>*<em>2*</em>*<em>）*</em>*<em>on*</em>*<em>：关联多表查询时，去除笛卡尔积*</em>*</em></p>
+<p>​    <em>*<em>*（*</em>*<em>3*</em>*<em>）*</em>*<em>where*</em>*<em>：从表中筛选的条件*</em>*</em></p>
+<p>​    <em>*<em>*（*</em>*<em>4*</em>*<em>）*</em>*<em>group by*</em>*<em>：分组依据*</em>*</em></p>
+<p>​    <em>*<em>*（*</em>*<em>5*</em>*<em>）*</em>*<em>having*</em>*<em>：在统计结果中再次筛选*</em>*</em></p>
+<p>​    <em>*<em>*（*</em>*<em>6*</em>*<em>）*</em>*<em>order by*</em>*<em>：排序*</em>*</em></p>
+<p>​    <em>*<em>*（*</em>*<em>7*</em>*<em>）*</em>*<em>limit*</em>*<em>：分页*</em>*</em></p>
+<h3 id="SELECT执行顺序"><a href="#SELECT执行顺序" class="headerlink" title="SELECT执行顺序"></a><strong>SELECT执行顺序</strong></h3><p><em><strong>*需要记住** *<em>SELECT*</em> **查询时的两个顺序：*</strong></em></p>
+<p><strong>1.</strong> <strong>关键字的顺序是不能颠倒的：</strong></p>
+<p>​    <strong>SELECT … FROM … WHERE … GROUP BY … HAVING … ORDER BY … LIMIT…</strong></p>
+<p><strong>2.SELECT</strong> <strong>语句的执行顺序</strong> （在 MySQL 和 Oracle 中， SELECT 执行顺序基本相同）：</p>
+<p>​    <strong>FROM -&gt; WHERE -&gt; GROUP BY -&gt; HAVING -&gt; SELECT</strong> <em>*<em>*的字段*</em> **-&gt; DISTINCT -&gt; ORDER BY -&gt; LIMIT*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247261394.png" alt="img"></p>
+<p><em><strong>*比如你写了一个** *<em>SQL*</em> **语句，那么它的关键字顺序和执行顺序是下面这样的：*</strong></em></p>
+<p>​    <em>*<em>*SELECT DISTINCT*</em> *<em>player_id, player_name,*</em> *<em>count*</em>**(*)*</em> *<em>as*</em> *<em>num*</em> *<em>#*</em> *<em>顺序*</em> *<em>5*</em>**</p>
+<p>​    <em>*<em>*FROM*</em> *<em>player*</em> *<em>JOIN*</em> *<em>team*</em> *<em>ON*</em> *<em>player*</em>**.team_id*</em> *<em>&#x3D; team*</em>*<em>.team_id*</em> *<em>#*</em> *<em>顺序*</em> *<em>1*</em>**</p>
+<p>​    <em>*<em>*WHERE*</em> *<em>height &gt;*</em> *<em>1.80*</em> **#*</em> *<em>顺序*</em> *<em>2*</em>**</p>
+<p>​    <em>*<em>*GROUP BY*</em> *<em>player*</em>**.team_id*</em> *<em>#*</em> *<em>顺序*</em> *<em>3*</em>**</p>
+<p>​    <em>*<em>*HAVING*</em> *<em>num &gt;*</em> *<em>2*</em> **#*</em> *<em>顺序*</em> *<em>4*</em>**</p>
+<p>​    <em>*<em>*ORDER BY*</em> *<em>num*</em> *<em>DESC*</em> **#*</em> *<em>顺序*</em> *<em>6*</em>**</p>
+<p>​    <em>*<em>*LIMIT*</em> *<em>2*</em> **#*</em> *<em>顺序*</em> *<em>7*</em>**</p>
+<p>​    在 SELECT 语句执行这些步骤的时候，每个步骤都会产生一个 虚拟表 ，然后将这个虚拟表传入下一个步骤中作为输入。需要注意的是，这些步骤隐含在 SQL 的执行过程中，对于我们来说是不可见的。</p>
+<h3 id="SQL-的执行原理"><a href="#SQL-的执行原理" class="headerlink" title="SQL 的执行原理"></a><strong>SQL 的执行原理</strong></h3><p>​    SELECT 是先执行 FROM 这一步的。在这个阶段，如果是多张表联查，还会经历下面的几个步骤：</p>
+<p>​    \1. 首先先通过 CROSS JOIN 求笛卡尔积，相当于得到虚拟表 vt （</p>
+<p>virtual table ） 1-1 ；</p>
+<p>​    \2. 通过 ON 进行筛选，在虚拟表 vt1-1 的基础上进行筛选，得到虚拟表 vt1-2 ；</p>
+<p>​    \3. 添加外部行。如果我们使用的是左连接、右链接或者全连接，就会涉及到外部行，也就是在虚拟表 vt1-2 的基础上增加外部行，得到虚拟表 vt1-3 。</p>
+<p>​    当然如果我们操作的是两张以上的表，还会重复上面的步骤，直到所有表都被处理完为止。这个过程得到是我们的原始数据。</p>
+<p>​    当我们拿到了查询数据表的原始数据，也就是最终的虚拟表 vt1 ，就可以在此基础上再进行 WHERE 阶段 。在这个阶段中，会根据 vt1 表的结果进行筛选过滤，得到虚拟表 vt2 。</p>
+<p>然后进入第三步和第四步，也就是 GROUP 和 HAVING 阶段 。在这个阶段中，实际上是在虚拟表 vt2 的 基础上进行分组和分组过滤，得到中间的虚拟表 vt3 和 vt4 。</p>
+<p>​    当我们完成了条件筛选部分之后，就可以筛选表中提取的字段，也就是进入到 SELECT 和 DISTINCT 阶段 。</p>
+<p>​    首先在 SELECT 阶段会提取想要的字段，然后在 DISTINCT 阶段过滤掉重复的行，分别得到中间的虚拟表 vt5- 1 和 vt5 - 2 。</p>
+<p>​    当我们提取了想要的字段数据之后，就可以按照指定的字段进行排序，也就是 ORDER BY 阶段 ，得到 虚拟表 vt6 。</p>
+<p>​    最后在 vt6 的基础上，取出指定行的记录，也就是 LIMIT 阶段 ，得到最终的结果，对应的是虚拟表 vt7 。</p>
+<p>​    当然我们在写 SELECT 语句的时候，不一定存在所有的关键字，相应的阶段就会省略。</p>
+<p>​    同时因为 SQL 是一门类似英语的结构化查询语言，所以我们在写 SELECT 语句的时候，还要注意相应的 关键字顺序， <strong>所谓底层运行的原理，就是我们刚才讲到的执行顺序。</strong></p>
+<h2 id="练习-2"><a href="#练习-2" class="headerlink" title="练习"></a>练习</h2><h3 id="where子句可否使用组函数进行过滤"><a href="#where子句可否使用组函数进行过滤" class="headerlink" title="where子句可否使用组函数进行过滤?"></a>where子句可否使用组函数进行过滤?</h3><p><strong>回答：不可以</strong></p>
+<h3 id="查询公司员工工资的最大值，最小值，平均值，总和"><a href="#查询公司员工工资的最大值，最小值，平均值，总和" class="headerlink" title="查询公司员工工资的最大值，最小值，平均值，总和"></a>查询公司员工工资的最大值，最小值，平均值，总和</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247261456.png" alt="img"></p>
+<h3 id="查询各job-id的员工工资的最大值，最小值，平均值，总和"><a href="#查询各job-id的员工工资的最大值，最小值，平均值，总和" class="headerlink" title="查询各job_id的员工工资的最大值，最小值，平均值，总和"></a>查询各job_id的员工工资的最大值，最小值，平均值，总和</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247271462.png" alt="img"></p>
+<h3 id="选择具有各个job-id的员工人数"><a href="#选择具有各个job-id的员工人数" class="headerlink" title="选择具有各个job_id的员工人数"></a>选择具有各个job_id的员工人数</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247271468.png" alt="img"></p>
+<h3 id="查询员工最高工资和最低工资的差距（DIFFERENCE）"><a href="#查询员工最高工资和最低工资的差距（DIFFERENCE）" class="headerlink" title="查询员工最高工资和最低工资的差距（DIFFERENCE）"></a>查询员工最高工资和最低工资的差距（DIFFERENCE）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247271474.png" alt="img"></p>
+<h3 id="查询各个管理者手下员工的最低工资，其中最低工资不能低于6000，没有管理者的员工不计算在内"><a href="#查询各个管理者手下员工的最低工资，其中最低工资不能低于6000，没有管理者的员工不计算在内" class="headerlink" title="查询各个管理者手下员工的最低工资，其中最低工资不能低于6000，没有管理者的员工不计算在内"></a>查询各个管理者手下员工的最低工资，其中最低工资不能低于6000，没有管理者的员工不计算在内</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247281480.png" alt="img"></p>
+<h3 id="查询所有部门的名字，location-id，员工数量和平均工资，并按平均工资降序"><a href="#查询所有部门的名字，location-id，员工数量和平均工资，并按平均工资降序" class="headerlink" title="查询所有部门的名字，location_id，员工数量和平均工资，并按平均工资降序"></a>查询所有部门的名字，location_id，员工数量和平均工资，并按平均工资降序</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247281486.png" alt="img"></p>
+<h3 id="查询每个工种中每个部门的部门名、工种名和最低工资"><a href="#查询每个工种中每个部门的部门名、工种名和最低工资" class="headerlink" title="查询每个工种中每个部门的部门名、工种名和最低工资"></a>查询每个工种中每个部门的部门名、工种名和最低工资</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247281492.png" alt="img"></p>
+<h1 id="MySQL-聚合函数-1"><a href="#MySQL-聚合函数-1" class="headerlink" title="MySQL 聚合函数"></a>MySQL 聚合函数</h1><h2 id="子查询介绍-1"><a href="#子查询介绍-1" class="headerlink" title="子查询介绍"></a>子查询介绍</h2><p>​    子查询指一个查询语句嵌套在另一个查询语句内部的查询，这个特性从MySQL 4.1开始引入。</p>
+<p>​    SQL 中子查询的使用大大增强了 SELECT 查询的能力，因为很多时候查询需要从结果集中获取数据，或者需要从同一个表中先计算得出一个数据结果，然后与这个数据结果（可能是某个标量，也可能是某个集合）进行比较。</p>
+<h2 id="需求分析与问题解决-1"><a href="#需求分析与问题解决-1" class="headerlink" title="需求分析与问题解决"></a><strong>需求分析与问题解决</strong></h2><h3 id="实际问题-1"><a href="#实际问题-1" class="headerlink" title="实际问题"></a><strong>实际问题</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247281508.png" alt="img"></p>
+<p><strong>需求：谁的工资比 Abel高?</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247291514.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247291516.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247291518.png" alt="img"></p>
+<p> <strong>查询称谓：括号外的查询称为：外查询（主查询）</strong></p>
+<p>​          <strong>括号内的查询称为：内查询（子查询）</strong></p>
+<p><strong>问题：</strong> 方式2与方式3有好坏之分吗？（方式1为两次查询，不推荐使用）</p>
+<p><strong>解答：</strong> 自连接方式好！</p>
+<p>​    题目中可以使用子查询，也可以使用自连接。一般情况建议你使用自连接，因为在许多 DBMS 的处理过 程中，对于自连接的处理速度要比子查询快得多。</p>
+<p>​    可以这样理解：子查询实际上是通过未知表进行查询后的条件判断，而自连接是通过已知的自身数据表进行条件判断，因此在大部分 DBMS 中都对自连接处理进行了优化。</p>
+<h3 id="子查询的基本使用-1"><a href="#子查询的基本使用-1" class="headerlink" title="子查询的基本使用"></a><strong>子查询的基本使用</strong></h3><p>​    <em><strong>*子查询的基本语法结构：*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247291536.png" alt="img"></p>
+<p>​    <em><strong>*子查询（内查询）在主查询之前一次执行完成。*</strong></em></p>
+<p>​    <em><strong>*子查询的结果被主查询（外查询）使用 。*</strong></em></p>
+<p>​    </p>
+<p>​    <strong>注意事项</strong></p>
+<p>​        <em><strong>*1.子查询要包含在括号内*</strong></em></p>
+<p>​        <em><strong>*2.将子查询放在比较条件的右侧*</strong></em></p>
+<p>​        <em><strong>*3.单行操作符对应单行子查询，多行操作符对应多行子查询*</strong></em></p>
+<h3 id="子查询的分类-1"><a href="#子查询的分类-1" class="headerlink" title="子查询的分类"></a><strong>子查询的分类</strong></h3><h3 id="分类方式1：-1"><a href="#分类方式1：-1" class="headerlink" title="分类方式1："></a><strong>分类方式<strong><strong>1</strong></strong>：</strong></h3><p>我们按内查询的<strong>结果返回一条还是多条记录</strong>，将子查询分为 单行子查询 、 多行子查询 。</p>
+<p><em><strong>*单行子查询：*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247291560.png" alt="img"></p>
+<p><em><strong>*多行子查询：*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247301566.png" alt="img"></p>
+<h3 id="分类方式2：-1"><a href="#分类方式2：-1" class="headerlink" title="分类方式2："></a><strong>分类方式<strong><strong>2</strong></strong>：</strong></h3><p>​    我们按内查询<strong>是否被执行多次</strong>，将子查询划分为 相关 ( 或关联 ) 子查询 和 不相关 ( 或非关联 ) 子查询 。</p>
+<p>​    子查询从数据表中查询了数据结果，如果这个数据结果只执行一次，然后这个数据结果作为主查询的条件进行执行，那么这样的子查询叫做不相关子查询。</p>
+<p>​    同样，如果子查询需要执行多次，即采用循环的方式，先从外部查询开始，每次都传入子查询进行查询，然后再将结果反馈给外部，这种嵌套的执行方式就称为相关子查询。</p>
+<h2 id="单行子查询-1"><a href="#单行子查询-1" class="headerlink" title="单行子查询"></a><strong>单行子查询</strong></h2><h3 id="单行比较操作符-1"><a href="#单行比较操作符-1" class="headerlink" title="单行比较操作符"></a><strong>单行比较操作符</strong></h3><table>
+<thead>
+<tr>
+<th><strong>操作符</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*&#x3D;*</strong></em></td>
+<td><em><strong>*equal to*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&gt;*</strong></em></td>
+<td><em><strong>*greater than*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&gt;&#x3D;*</strong></em></td>
+<td><em><strong>*greater than or equal to*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&lt;*</strong></em></td>
+<td><em><strong>*less than*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&lt;&#x3D;*</strong></em></td>
+<td><em><strong>*less than or equal to*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*&lt;&gt;*</strong></em></td>
+<td><em><strong>*not equal to*</strong></em></td>
+</tr>
+</tbody></table>
+<h3 id="代码示例-4"><a href="#代码示例-4" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><h3 id="需求：查询工资大于149号员工工资的员工的信息-1"><a href="#需求：查询工资大于149号员工工资的员工的信息-1" class="headerlink" title="需求：查询工资大于149号员工工资的员工的信息"></a><strong>需求：查询工资大于<strong><strong>149</strong></strong>号员工工资的员工的信息</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247301595.png" alt="img"></p>
+<h3 id="-4"><a href="#-4" class="headerlink" title=""></a></h3><h3 id="需求：返回job-id与141号员工相同，salary比143号员工多的员工姓名，-1"><a href="#需求：返回job-id与141号员工相同，salary比143号员工多的员工姓名，-1" class="headerlink" title="需求：返回job_id与141号员工相同，salary比143号员工多的员工姓名，"></a><strong>需求：返回<strong><strong>job_id</strong></strong>与<strong><strong>141</strong></strong>号员工相同，<strong><strong>salary</strong></strong>比<strong><strong>143</strong></strong>号员工多的员工姓名，</strong></h3><h3 id="job-id-和工资-1"><a href="#job-id-和工资-1" class="headerlink" title="job_id****和工资"></a><strong>job_id****和工资</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247301603.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247301605.png" alt="img"></p>
+<h3 id="需求：返回公司工资最少的员工的last-name-job-id和-salary-1"><a href="#需求：返回公司工资最少的员工的last-name-job-id和-salary-1" class="headerlink" title="需求：返回公司工资最少的员工的last_name,job_id和****salary"></a><strong>需求：返回公司工资最少的员工的<strong><strong>last_name,job_id</strong></strong>和****salary</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247301609.png" alt="img"></p>
+<h3 id="需求：查询与141号或174号员工的manager-id和department-id相同的其他员工-1"><a href="#需求：查询与141号或174号员工的manager-id和department-id相同的其他员工-1" class="headerlink" title="需求：查询与141号或174号员工的manager_id和department_id相同的其他员工"></a><strong>需求：查询与<strong><strong>141</strong></strong>号或<strong><strong>174</strong></strong>号员工的<strong><strong>manager_id</strong></strong>和<strong><strong>department_id</strong></strong>相同的其他员工</strong></h3><h3 id="的employee-id，manager-id，department-id-1"><a href="#的employee-id，manager-id，department-id-1" class="headerlink" title="的employee_id，manager_id，department_id"></a><strong>的employee_id<strong><strong>，</strong></strong>manager_id<strong><strong>，</strong></strong>department_id</strong></h3><p>实现方式 1 ：不成对比较</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247311619.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247311621.png" alt="img"></p>
+<p> 实现方式2：成对比较</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247311625.png" alt="img"></p>
+<h3 id="HAVING-中的子查询-1"><a href="#HAVING-中的子查询-1" class="headerlink" title="HAVING 中的子查询"></a><strong>HAVING 中的子查询</strong></h3><p>​    <strong>首先执行子查询。</strong></p>
+<p>​    <em><strong>*向主查询中的HAVING** **子句返回结果。*</strong></em></p>
+<h3 id="需求：查询最低工资大于110号部门最低工资的部门id和其最低工资-1"><a href="#需求：查询最低工资大于110号部门最低工资的部门id和其最低工资-1" class="headerlink" title="需求：查询最低工资大于110号部门最低工资的部门id和其最低工资"></a><strong>需求：查询最低工资大于11<strong><strong>0</strong></strong>号部门最低工资的部门<strong><strong>id</strong></strong>和其最低工资</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247311637.png" alt="img"></p>
+<h3 id="CASE中的子查询-1"><a href="#CASE中的子查询-1" class="headerlink" title="CASE中的子查询"></a><strong>CASE中的子查询</strong></h3><p>​    在CASE 表达式中使用单列子查询：</p>
+<h3 id="需求：显式员工的employee-id-last-name和location。其中，若员工-1"><a href="#需求：显式员工的employee-id-last-name和location。其中，若员工-1" class="headerlink" title="需求：显式员工的employee_id,last_name和location。其中，若员工"></a><strong>需求：显式员工的<strong><strong>employee_id,last_name</strong></strong>和<strong><strong>location</strong></strong>。其中，若员工</strong></h3><h3 id="department-id与location-id为1800的department-id相同，则-location-1"><a href="#department-id与location-id为1800的department-id相同，则-location-1" class="headerlink" title="department_id与location_id为1800的department_id相同，则****location"></a><strong>department_id与<strong><strong>location_id</strong></strong>为<strong><strong>1800</strong></strong>的<strong><strong>department_id</strong></strong>相同，则****location</strong></h3><h3 id="为’Canada’，其余则为’USA’-。-1"><a href="#为’Canada’，其余则为’USA’-。-1" class="headerlink" title="为’Canada’，其余则为’USA’****。"></a><strong>为’Canada’<strong><strong>，其余则为</strong></strong>’USA’****。</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247311651.png" alt="img"></p>
+<h3 id="子查询中的空值问题-1"><a href="#子查询中的空值问题-1" class="headerlink" title="子查询中的空值问题"></a><strong>子查询中的空值问题</strong></h3><h2 id="-5"><a href="#-5" class="headerlink" title=""></a><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247321657.png" alt="img"></h2><p><strong>原因：*<em>子查询不返回任何行*</em></strong> </p>
+<h2 id="-6"><a href="#-6" class="headerlink" title=""></a><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247321661.png" alt="img"></h2><h3 id="非法使用子查询-1"><a href="#非法使用子查询-1" class="headerlink" title="非法使用子查询"></a><strong>非法使用子查询</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247321665.png" alt="img"></p>
+<p> <strong>原因：*<em>多行子查询使用单行比较符*</em></strong></p>
+<h2 id="多行子查询-1"><a href="#多行子查询-1" class="headerlink" title="多行子查询"></a><strong>多行子查询</strong></h2><p>​    <strong>也称为集合比较子查询</strong></p>
+<p>​    <em><strong>*内查询返回多行*</strong></em></p>
+<p>​    <em><strong>*使用多行比较操作符*</strong></em></p>
+<h3 id="多行比较操作符-1"><a href="#多行比较操作符-1" class="headerlink" title="多行比较操作符"></a><strong>多行比较操作符</strong></h3><table>
+<thead>
+<tr>
+<th><em><strong>*操作符*</strong></em></th>
+<th><em><strong>*含义*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*IN*</strong></em></td>
+<td><em>*<em>*等于列表中的*</em>*<em>任意一个*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ANY*</strong></em></td>
+<td><em>*<em>*需要和单行比较操作符一起使用，和子查询返回的*</em>*<em>某一个*</em>*<em>值比较*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*ALL*</strong></em></td>
+<td><em>*<em>*需要和单行比较操作符一起使用，和子查询返回的*</em>*<em>所有*</em>*<em>值比较*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*SOME*</strong></em></td>
+<td><em>*<em>*实际上是*</em>*<em>ANY*</em>*<em>的别名，作用相同，一般常使用*</em>*<em>ANY*</em>*</em></td>
+</tr>
+</tbody></table>
+<h3 id="代码示例-5"><a href="#代码示例-5" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><h3 id="需求：查询每个部门中最低工资的员工号和姓名-1"><a href="#需求：查询每个部门中最低工资的员工号和姓名-1" class="headerlink" title="需求：查询每个部门中最低工资的员工号和姓名"></a><strong>需求：查询每个部门中最低工资的员工号和姓名</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247321690.png" alt="img"></p>
+<h3 id="需求：返回其它job-id中比job-id为‘IT-PROG’部门任一工资低的员工的-1"><a href="#需求：返回其它job-id中比job-id为‘IT-PROG’部门任一工资低的员工的-1" class="headerlink" title="需求：返回其它job_id中比job_id为‘IT_PROG’部门任一工资低的员工的"></a><strong>需求：返回其它<strong><strong>job_id</strong></strong>中比<strong><strong>job_id</strong></strong>为<strong><strong>‘IT_PROG’</strong></strong>部门任一工资低的员工的</strong></h3><h3 id="员工号、姓名、job-id-以及-salary-1"><a href="#员工号、姓名、job-id-以及-salary-1" class="headerlink" title="员工号、姓名、job_id 以及****salary"></a><strong>员工号、姓名、job_id</strong> <strong>以及****salary</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247321698.png" alt="img"></p>
+<h3 id="需求：返回其它job-id中比job-id为‘IT-PROG’部门所有工资都低的员工的-1"><a href="#需求：返回其它job-id中比job-id为‘IT-PROG’部门所有工资都低的员工的-1" class="headerlink" title="需求：返回其它job_id中比job_id为‘IT_PROG’部门所有工资都低的员工的"></a><strong>需求：返回其它<strong><strong>job_id</strong></strong>中比<strong><strong>job_id</strong></strong>为<strong><strong>‘IT_PROG’</strong></strong>部门所有工资都低的员工的</strong></h3><h3 id="员工号、姓名、job-id以及salary-1"><a href="#员工号、姓名、job-id以及salary-1" class="headerlink" title="员工号、姓名、job_id以及salary"></a><strong>员工号、姓名、job_id<strong><strong>以及</strong></strong>salary</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247331706.png" alt="img"></p>
+<h3 id="需求：查询平均工资最低的部门-id-1"><a href="#需求：查询平均工资最低的部门-id-1" class="headerlink" title="需求：查询平均工资最低的部门****id"></a><strong>需求：查询平均工资最低的部门****id</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247331710.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247331712.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247331714.png" alt="img"></p>
+<h3 id="空值问题-1"><a href="#空值问题-1" class="headerlink" title="空值问题"></a><strong>空值问题</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247341720.png" alt="img"></p>
+<p> <strong>原因：内查询中存在NULL</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247341724.png" alt="img"></p>
+<h2 id="相关子查询-1"><a href="#相关子查询-1" class="headerlink" title="相关子查询"></a><strong>相关子查询</strong></h2><h3 id="相关子查询执行流程-1"><a href="#相关子查询执行流程-1" class="headerlink" title="相关子查询执行流程"></a><strong>相关子查询执行流程</strong></h3><p>​    如果子查询的执行依赖于外部查询，通常情况下都是因为子查询中的表用到了外部的表，并进行了条件关联，因此每执行一次外部查询，子查询都要重新计算一次，这样的子查询就称之为 关联子查询 。</p>
+<p>​    相关子查询按照一行接一行的顺序执行，主查询的每一行都执行一次子查询。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247341734.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247341736.png" alt="img"></p>
+<p> 说明：<strong>子查询中使用主查询中的列</strong></p>
+<h3 id="代码示例-6"><a href="#代码示例-6" class="headerlink" title="代码示例"></a><strong>代码示例</strong></h3><h3 id="需求：查询员工中工资大于本部门平均工资的员工的last-name-salary和-1"><a href="#需求：查询员工中工资大于本部门平均工资的员工的last-name-salary和-1" class="headerlink" title="需求：查询员工中工资大于本部门平均工资的员工的last_name,salary和"></a><strong>需求：查询员工中工资大于本部门平均工资的员工的<strong><strong>last_name,salary</strong></strong>和</strong></h3><h3 id="其department-id-1"><a href="#其department-id-1" class="headerlink" title="其department_id"></a><strong>其department_id</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247341748.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247351750.png" alt="img"></p>
+<h3 id="需求：查询员工的-id-salary-按照department-name-排序-1"><a href="#需求：查询员工的-id-salary-按照department-name-排序-1" class="headerlink" title="*需求：查询员工的**id,salary,按照department_name* 排序"></a>*<em>需求：查询员工的</em>**<em>id,salary,<strong><strong>按照</strong></strong>department_name</em>* <strong>排序</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247351754.png" alt="img"></p>
+<h3 id="需求：若employees表中employee-id与job-history表中employee-id相同的-数-1"><a href="#需求：若employees表中employee-id与job-history表中employee-id相同的-数-1" class="headerlink" title="需求：若employees表中employee_id与job_history表中employee_id相同的****数"></a><strong>需求：若<strong><strong>employees</strong></strong>表中<strong><strong>employee_id</strong></strong>与<strong><strong>job_history</strong></strong>表中<strong><strong>employee_id</strong></strong>相同的****数</strong></h3><h3 id="目不小于2，输出这些相同id的员工的employee-id-last-name和其-job-id-1"><a href="#目不小于2，输出这些相同id的员工的employee-id-last-name和其-job-id-1" class="headerlink" title="目不小于2，输出这些相同id的员工的employee_id,last_name和其****job_id"></a><strong>目不小于2，输出这些相同<strong><strong>id</strong></strong>的员工的<strong><strong>employee_id,last_name</strong></strong>和其****job_id</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247351762.png" alt="img"></p>
+<h3 id="EXISTS-与-NOT-EXISTS关键字-1"><a href="#EXISTS-与-NOT-EXISTS关键字-1" class="headerlink" title="EXISTS 与 NOT EXISTS关键字"></a><strong>EXISTS 与 NOT EXISTS关键字</strong></h3><p>​    关联子查询通常也会和 EXISTS 操作符一起来使用，用来检查在子查询中是否存在满足条件的行。</p>
+<p>​    <strong>如果在子查询中不存在满足条件的行：</strong></p>
+<p>​        条件返回 FALSE</p>
+<p>​        继续在子查询中查找</p>
+<p>​    <strong>如果在子查询中存在满足条件的行：</strong></p>
+<p>​        不在子查询中继续查找</p>
+<p>​        条件返回 TRUE</p>
+<p>​    NOT EXISTS关键字表示如果不存在某种条件，则返回 TRUE ，否则返回 FALSE 。</p>
+<h3 id="需求：查询公司管理者的employee-id，last-name，job-id，-department-id-1"><a href="#需求：查询公司管理者的employee-id，last-name，job-id，-department-id-1" class="headerlink" title="需求：查询公司管理者的employee_id，last_name，job_id，****department_id"></a><strong>需求：查询公司管理者的<strong><strong>employee_id</strong></strong>，<strong><strong>last_name</strong></strong>，<strong><strong>job_id</strong></strong>，****department_id</strong></h3><h3 id="信息-1"><a href="#信息-1" class="headerlink" title="信息"></a><strong>信息</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247351786.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247351788.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247361790.png" alt="img"></p>
+<h3 id="需求：查询departments表中，不存在于employees表中的部门的-department-id和department-name-1"><a href="#需求：查询departments表中，不存在于employees表中的部门的-department-id和department-name-1" class="headerlink" title="需求：查询departments表中，不存在于employees表中的部门的       department_id和department_name"></a>需求：查询departments表中，不存在于employees表中的部门的       department_id和department_name</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247361794.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247361796.png" alt="img"></p>
+<h3 id="相关更新-1"><a href="#相关更新-1" class="headerlink" title="相关更新"></a><strong>相关更新</strong></h3><p><strong>语法：</strong></p>
+<p>​    <em><strong>*UPDATE** **table1 alias1*</strong></em></p>
+<p>​    <em>*<em>*SET*</em> *<em>column &#x3D; (*</em>*<em>SELECT*</em> *<em>expression*</em>*</em></p>
+<p>​                 <em><strong>*FROM** **table2 alias2*</strong></em></p>
+<p>​                 <em>*<em>*WHERE*</em> *<em>alias1*</em>**.column*</em> *<em>&#x3D; alias2*</em>*<em>.column*</em>*<em>);*</em>**</p>
+<p><em><strong>*使用相关子查询依据一个表中的数据更新另一个表的数据。*</strong></em></p>
+<h3 id="需求：在employees中增加一个department-name字段，数据为员工对应的-1"><a href="#需求：在employees中增加一个department-name字段，数据为员工对应的-1" class="headerlink" title="需求：在employees中增加一个department_name字段，数据为员工对应的"></a><strong>需求：在<strong><strong>employees</strong></strong>中增加一个<strong><strong>department_name</strong></strong>字段，数据为员工对应的</strong></h3><h3 id="部门名称-1"><a href="#部门名称-1" class="headerlink" title="部门名称"></a><strong>部门名称</strong></h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247361816.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247371818.png" alt="img"></p>
+<h3 id="相关删除-1"><a href="#相关删除-1" class="headerlink" title="相关删除"></a><strong>相关删除</strong></h3><p><strong>语法：</strong></p>
+<p>​    DELETE FROM table1 alias1</p>
+<p>​    WHERE column operator ( SELECT expression</p>
+<p>​                         FROM table2 alias2</p>
+<p>​                         WHERE alias1 .column &#x3D; alias2 .column );</p>
+<p><strong>题目：删除表</strong> <strong>employees</strong> <strong>中，其与</strong> <strong>emp_history</strong> <strong>表皆有的数据</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247371836.png" alt="img"></p>
+<h2 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h2><p><strong>结论：在SELECT语句中，出GROUP BY 与LIMIT之外，其余地方都可以声明子查询</strong></p>
+<h2 id="练习-3"><a href="#练习-3" class="headerlink" title="练习"></a>练习</h2><h3 id="查询和Zlotkey相同部门的员工姓名和工资-1"><a href="#查询和Zlotkey相同部门的员工姓名和工资-1" class="headerlink" title="查询和Zlotkey相同部门的员工姓名和工资"></a>查询和Zlotkey相同部门的员工姓名和工资</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247411848.png" alt="img"></p>
+<h3 id="查询工资比公司平均工资高的员工的员工号，姓名和工资。-1"><a href="#查询工资比公司平均工资高的员工的员工号，姓名和工资。-1" class="headerlink" title="查询工资比公司平均工资高的员工的员工号，姓名和工资。"></a>查询工资比公司平均工资高的员工的员工号，姓名和工资。</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247421852.png" alt="img"></p>
+<h3 id="选择工资大于所有JOB-ID-x3D-‘SA-MAN’的员工的工资的员工的last-name-job-id-salary-1"><a href="#选择工资大于所有JOB-ID-x3D-‘SA-MAN’的员工的工资的员工的last-name-job-id-salary-1" class="headerlink" title="选择工资大于所有JOB_ID &#x3D; ‘SA_MAN’的员工的工资的员工的last_name, job_id, salary"></a>选择工资大于所有JOB_ID &#x3D; ‘SA_MAN’的员工的工资的员工的last_name, job_id, salary</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247431856.png" alt="img"></p>
+<h3 id="查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名-1"><a href="#查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名-1" class="headerlink" title="查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名"></a>查询和姓名中包含字母u的员工在相同部门的员工的员工号和姓名</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247441862.png" alt="img"></p>
+<h3 id="查询在部门的location-id为1700的部门工作的员工的员工号-1"><a href="#查询在部门的location-id为1700的部门工作的员工的员工号-1" class="headerlink" title="查询在部门的location_id为1700的部门工作的员工的员工号"></a>查询在部门的location_id为1700的部门工作的员工的员工号</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247441868.png" alt="img"></p>
+<h3 id="查询管理者是King的员工姓名和工资-1"><a href="#查询管理者是King的员工姓名和工资-1" class="headerlink" title="查询管理者是King的员工姓名和工资"></a>查询管理者是King的员工姓名和工资</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247491874.png" alt="img"></p>
+<h3 id="查询工资最低的员工信息-last-name-salary-1"><a href="#查询工资最低的员工信息-last-name-salary-1" class="headerlink" title="查询工资最低的员工信息: last_name, salary"></a>查询工资最低的员工信息: last_name, salary</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247501880.png" alt="img"></p>
+<h3 id="查询平均工资最低的部门信息-1"><a href="#查询平均工资最低的部门信息-1" class="headerlink" title="查询平均工资最低的部门信息"></a>查询平均工资最低的部门信息</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247501886.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247511888.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247511890.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247511892.png" alt="img"></p>
+<h3 id="查询平均工资最低的部门信息和该部门的平均工资（相关子查询）-1"><a href="#查询平均工资最低的部门信息和该部门的平均工资（相关子查询）-1" class="headerlink" title="查询平均工资最低的部门信息和该部门的平均工资（相关子查询）"></a>查询平均工资最低的部门信息和该部门的平均工资（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247521898.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247521900.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247521902.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247531904.png" alt="img"></p>
+<h3 id="1查询平均工资最高的-job-信息"><a href="#1查询平均工资最高的-job-信息" class="headerlink" title="1查询平均工资最高的 job 信息"></a>1查询平均工资最高的 job 信息</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247531908.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247541910.png" alt="img"></p>
+<h3 id="查询平均工资高于公司平均工资的部门有哪些-1"><a href="#查询平均工资高于公司平均工资的部门有哪些-1" class="headerlink" title="查询平均工资高于公司平均工资的部门有哪些?"></a>查询平均工资高于公司平均工资的部门有哪些?</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247551916.png" alt="img"></p>
+<h3 id="查询出公司中所有-manager-的详细信息-1"><a href="#查询出公司中所有-manager-的详细信息-1" class="headerlink" title="查询出公司中所有 manager 的详细信息"></a>查询出公司中所有 manager 的详细信息</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247561922.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247571924.png" alt="img"></p>
+<h3 id="各个部门中-最高工资中最低的那个部门的-最低工资是多少-1"><a href="#各个部门中-最高工资中最低的那个部门的-最低工资是多少-1" class="headerlink" title="各个部门中 最高工资中最低的那个部门的 最低工资是多少?"></a>各个部门中 最高工资中最低的那个部门的 最低工资是多少?</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247591930.png" alt="img"></p>
+<h3 id="查询平均工资最高的部门的-manager-的详细信息-last-name-1"><a href="#查询平均工资最高的部门的-manager-的详细信息-last-name-1" class="headerlink" title="查询平均工资最高的部门的 manager 的详细信息: last_name,"></a>查询平均工资最高的部门的 manager 的详细信息: last_name,</h3><h3 id="department-id-email-salary-1"><a href="#department-id-email-salary-1" class="headerlink" title="department_id, email, salary"></a>department_id, email, salary</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247591938.png" alt="img"></p>
+<h3 id="查询部门的部门号，其中不包括job-id是”ST-CLERK”的部门号-1"><a href="#查询部门的部门号，其中不包括job-id是”ST-CLERK”的部门号-1" class="headerlink" title="查询部门的部门号，其中不包括job_id是”ST_CLERK”的部门号"></a>查询部门的部门号，其中不包括job_id是”ST_CLERK”的部门号</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061247591944.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248001946.png" alt="img"> </p>
+<h3 id="选择所有没有管理者的员工的last-name-1"><a href="#选择所有没有管理者的员工的last-name-1" class="headerlink" title="选择所有没有管理者的员工的last_name"></a>选择所有没有管理者的员工的last_name</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248001950.png" alt="img"></p>
+<h3 id="查询员工号、姓名、雇用时间、工资，其中员工的管理者为-‘De-Haan’-1"><a href="#查询员工号、姓名、雇用时间、工资，其中员工的管理者为-‘De-Haan’-1" class="headerlink" title="查询员工号、姓名、雇用时间、工资，其中员工的管理者为 ‘De Haan’"></a>查询员工号、姓名、雇用时间、工资，其中员工的管理者为 ‘De Haan’</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248001956.png" alt="img"></p>
+<h3 id="查询各部门中工资比本部门平均工资高的员工的员工号-姓名和工资-1"><a href="#查询各部门中工资比本部门平均工资高的员工的员工号-姓名和工资-1" class="headerlink" title="查询各部门中工资比本部门平均工资高的员工的员工号, 姓名和工资"></a>查询各部门中工资比本部门平均工资高的员工的员工号, 姓名和工资</h3><h3 id="（相关子查询）-1"><a href="#（相关子查询）-1" class="headerlink" title="（相关子查询）"></a>（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248011964.png" alt="img"></p>
+<h3 id="查询每个部门下的部门人数大于-5-的部门名称（相关子查询）-1"><a href="#查询每个部门下的部门人数大于-5-的部门名称（相关子查询）-1" class="headerlink" title="查询每个部门下的部门人数大于 5 的部门名称（相关子查询）"></a>查询每个部门下的部门人数大于 5 的部门名称（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248011970.png" alt="img"></p>
+<h3 id="查询每个国家下的部门个数大于-2-的国家编号（相关子查询）-1"><a href="#查询每个国家下的部门个数大于-2-的国家编号（相关子查询）-1" class="headerlink" title="查询每个国家下的部门个数大于 2 的国家编号（相关子查询）"></a>查询每个国家下的部门个数大于 2 的国家编号（相关子查询）</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248011976.png" alt="img"></p>
+<h1 id="MySQL-创建和管理表"><a href="#MySQL-创建和管理表" class="headerlink" title="MySQL 创建和管理表"></a>MySQL 创建和管理表</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a><strong>基础知识</strong></h2><h3 id="一条数据存储的过程"><a href="#一条数据存储的过程" class="headerlink" title="一条数据存储的过程"></a><strong>一条数据存储的过程</strong></h3><p>​    存储数据是处理数据的第一步 。只有正确地把数据存储起来，我们才能进行有效的处理和分析。否则，只能是一团乱麻，无从下手。</p>
+<p>​    那么，怎样才能把用户各种经营相关的、纷繁复杂的数据，有序、高效地存储起来呢？ 在 MySQL 中，一个完整的数据存储过程总共有 4 步，分别是创建数据库、确认字段、创建数据表、插入数据。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248011988.png" alt="img"></p>
+<p>​    我们要先创建一个数据库，而不是直接创建数据表呢？</p>
+<p>​    因为从系统架构的层次上看，MySQL 数据库系统从大到小依次是 数据库服务器 、 数据库 、 数据表 、数据表的 行与列 。</p>
+<p>​    MySQL 数据库服务器之前已经安装。所以，我们就从创建数据库开始。</p>
+<h3 id="标识符命名规则"><a href="#标识符命名规则" class="headerlink" title="标识符命名规则"></a><strong>标识符命名规则</strong></h3><p>​    <em>*<em>*1.数据库名、表名不得超过30*</em>*<em>个字符，变量名限制为*</em>*<em>29*</em>*<em>个*</em>*</em></p>
+<p>​    <em>*<em>*2.必须只能包含 A–Z, a–z, 0–9, _*</em>*<em>共*</em>*<em>63*</em>*<em>个字符*</em>*</em></p>
+<p>​    <em><strong>*3.数据库名、表名、字段名等对象名中间不要包含空格*</strong></em></p>
+<p>​    <em>*<em>*4.同一个MySQL*</em>*<em>软件中，数据库不能同名；同一个库中，表不能重名；同一个表中，字段不能重名*</em>*</em></p>
+<p>​    <em>*<em>*5.必须保证你的字段没有和保留字、数据库系统或常用方法冲突。如果坚持使用，请在SQL*</em>*<em>语句中使用&#96;*</em>*<em>（着重号）引起来*</em>*</em></p>
+<p>​    <em><strong>*6.保持字段名和类型的一致性：在命名字段并为其指定数据类型的时候一定要保证一致性，假如数据类型在一个表里是整数，那在另一个表里可就别变成字符型了*</strong></em></p>
+<h3 id="MySQL中的数据类型"><a href="#MySQL中的数据类型" class="headerlink" title="MySQL中的数据类型"></a><strong>MySQL中的数据类型</strong></h3><table>
+<thead>
+<tr>
+<th><em>*<em>*</em>*类型****</em>*</th>
+<th><em>*<em>*</em>*类型举例****</em>*</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>整数类型</td>
+<td>TINYINT、SMALLINT、MEDIUMINT、<em>*<em>*</em>*INT(****</em><em><em>*<em>*</em>*或****</em>***<em>*</em>*INTEGER)**</em>***、BIGINT</td>
+</tr>
+<tr>
+<td>浮点类型</td>
+<td>FLOAT、DOUBLE</td>
+</tr>
+<tr>
+<td>定点数类型</td>
+<td><em>*<em>*</em>*DECIMAL****</em>*</td>
+</tr>
+<tr>
+<td>位类型</td>
+<td>BIT</td>
+</tr>
+<tr>
+<td>日期时间类型</td>
+<td>YEAR、TIME、**<em>*</em>*DATE******、DATETIME、TIMESTAMP</td>
+</tr>
+<tr>
+<td>文本字符串类型</td>
+<td>CHAR、**<em>*</em>*VARCHAR******、TINYTEXT、TEXT、MEDIUMTEXT、LONGTEXT</td>
+</tr>
+<tr>
+<td>枚举类型</td>
+<td>ENUM</td>
+</tr>
+<tr>
+<td>集合类型</td>
+<td>SET</td>
+</tr>
+<tr>
+<td>二进制字符串类型</td>
+<td>BINARY、VARBINARY、TINYBLOB、BLOB、MEDIUMBLOB、LONGBLOB</td>
+</tr>
+<tr>
+<td>JSON类型</td>
+<td>JSON对象、JSON数组</td>
+</tr>
+<tr>
+<td>空间数据类型</td>
+<td>单值：GEOMETRY、POINT、LINESTRING、POLYGON；集合：MULTIPOINT、MULTILINESTRING、MULTIPOLYGON、GEOMETRYCOLLECTION</td>
+</tr>
+</tbody></table>
+<p><em><strong>*其中，常用的几类类型介绍如下：*</strong></em></p>
+<table>
+<thead>
+<tr>
+<th><strong>数据类型</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*INT*</strong></em></td>
+<td><em>*<em>*从*</em>**-2^31*</em>*<em>到*</em>*<em>2^31-1*</em>*<em>的整型数据。存储大小为*</em> *<em>4*</em>*<em>个字节*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*CHAR(size)*</strong></em></td>
+<td><em>*<em>*定长字符数据。若未指定，默认为*</em>*<em>1*</em>*<em>个字符，最大长度*</em>*<em>255*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*VARCHAR(size)*</strong></em></td>
+<td><em>*<em>*可变长字符数据，根据字符串实际长度保存，*</em>*<em>必须指定长度*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*FLOAT(M,D)*</strong></em></td>
+<td><em>*<em>*单精度，占用*</em>*<em>4*</em>*<em>个字节，*</em>*<em>M&#x3D;*</em>*<em>整数位*</em>**+*</em>*<em>小数位，*</em>*<em>D&#x3D;*</em>*<em>小数位。*</em> *<em>D&lt;&#x3D;M&lt;&#x3D;255,0&lt;&#x3D;D&lt;&#x3D;30*</em>*<em>， 默认*</em>*<em>M+D&lt;&#x3D;6*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*DOUBLE(M,D)*</strong></em></td>
+<td><em>*<em>*双精度，占用*</em>*<em>8*</em>*<em>个字节，*</em>*<em>D&lt;&#x3D;M&lt;&#x3D;255,0&lt;&#x3D;D&lt;&#x3D;30*</em>*<em>，默认*</em>*<em>M+D&lt;&#x3D;15*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*DECIMAL(M,D)*</strong></em></td>
+<td><em>*<em>*高精度小数，占用*</em>*<em>M+2*</em>*<em>个字节，*</em>*<em>D&lt;&#x3D;M&lt;&#x3D;65*</em>*<em>，*</em>*<em>0&lt;&#x3D;D&lt;&#x3D;30*</em>*<em>，最大取值范围与*</em>*<em>DOUBLE*</em>*<em>相同。*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*DATE*</strong></em></td>
+<td><em>*<em>*日期型数据，格式*</em>**’YYYY-MM-DD’*</em>**</td>
+</tr>
+<tr>
+<td><em><strong>*BLOB*</strong></em></td>
+<td><em>*<em>*二进制形式的长文本数据，最大可达*</em>*<em>4G*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TEXT*</strong></em></td>
+<td><em>*<em>*长文本数据，最大可达*</em>*<em>4G*</em>*</em></td>
+</tr>
+</tbody></table>
+<h2 id="创建和管理数据库"><a href="#创建和管理数据库" class="headerlink" title="创建和管理数据库"></a><strong>创建和管理数据库</strong></h2><h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a><strong>创建数据库</strong></h3><p><em>*<em>*方式*</em>*<em>1*</em>*<em>：创建数据库*</em>*</em></p>
+<p>​    <em><strong>*CREATE DATABASE** **数据库名;*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248012050.png" alt="img"></p>
+<p><em>*<em>*方式*</em>*<em>2*</em>*<em>：创建数据库并指定字符集*</em>*</em></p>
+<p>​    <strong>CREATE DATABASE</strong>  <em>*<em>*数据库名*</em> *<em>CHARACTER SET*</em> *<em>字符集*</em>**;*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248022056.png" alt="img"></p>
+<p><em>*<em>*方式*</em>*<em>3*</em>*<em>：判断数据库是否已经存在，不存在则创建数据库（*</em> *<em>推荐*</em> *<em>）*</em>*</em></p>
+<p>​    <em>*<em>*CREATE DATABASE IF NOT EXISTS*</em> *<em>数据库名*</em>**;*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248022064.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248032066.png" alt="img"></p>
+<h3 id="使用数据库"><a href="#使用数据库" class="headerlink" title="使用数据库"></a><strong>使用数据库</strong></h3><h4 id="查看当前所有的数据库"><a href="#查看当前所有的数据库" class="headerlink" title="查看当前所有的数据库"></a><strong>查看当前所有的数据库</strong></h4><p><strong>语法：</strong></p>
+<p>​    <strong>SHOW DATABASES</strong> <em>*<em>*;*</em> **#*</em>*<em>有一个*</em>*<em>S*</em>** <strong>，代表多个数据库</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248032076.png" alt="img"></p>
+<h4 id="使用-x2F-切换数据库"><a href="#使用-x2F-切换数据库" class="headerlink" title="使用&#x2F;切换数据库"></a>使用&#x2F;切换数据库</h4><p><em><strong>*语法：*</strong></em></p>
+<p>​    <strong>USE</strong> <em>*<em>*数据库名*</em>**;*</em>**</p>
+<h4 id="查看当前正在使用的数据库"><a href="#查看当前正在使用的数据库" class="headerlink" title="查看当前正在使用的数据库"></a>查看当前正在使用的数据库</h4><p><em><strong>*语法：*</strong></em></p>
+<p>​     <em>*<em>*SELECT DATABASE*</em>**();*</em> *<em>#*</em>*<em>使用的一个*</em> *<em>mysql*</em> *<em>中的全局函数*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248032090.png" alt="img"></p>
+<h4 id="查看指定库下的表"><a href="#查看指定库下的表" class="headerlink" title="查看指定库下的表"></a>查看指定库下的表</h4><p><em><strong>*语法：*</strong></em></p>
+<p>​    <em>*<em>*SHOW TABLES 【FROM*</em> *<em>数据库名】*</em>**; # 查看【指定数据库中的】所有表*</em>**</p>
+<p>​    <em><strong>*SHOW TABLE 表名 【FROM** **数据库名】;# 查看【指定数据库中的】指定的表*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248032100.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248042102.png" alt="img"></p>
+<h4 id="查看数据库的创建信息"><a href="#查看数据库的创建信息" class="headerlink" title="查看数据库的创建信息"></a>查看数据库的创建信息</h4><p><em><strong>*语法：*</strong></em>   </p>
+<p>​    <strong>SHOW CREATE DATABASE</strong> <em>*<em>*数据库名*</em>**;*</em>**</p>
+<p>​    <em><strong>*或者：*</strong></em></p>
+<p>​    <em>*<em>*SHOW CREATE DATABASE*</em> *<em>数据库名*</em>*<em>\G*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248042114.png" alt="img"></p>
+<h3 id="修改数据库"><a href="#修改数据库" class="headerlink" title="修改数据库"></a><strong>修改数据库</strong></h3><h4 id="更改数据库字符集"><a href="#更改数据库字符集" class="headerlink" title="更改数据库字符集"></a><strong>更改数据库字符集</strong></h4><p><strong>语法：</strong></p>
+<p>​    <strong>ALTER DATABASE</strong> <em>*<em>*数据库名*</em> *<em>CHARACTER SET*</em> *<em>字符集*</em>**;*</em> *<em>#*</em>*<em>比如：*</em>*<em>gbk*</em>*<em>、*</em>*<em>utf8*</em>*<em>等*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248042124.png" alt="img"></p>
+<p>​    <em><strong>*注意：DATABASE 不能改名。一些可视化工具可以改名，它是建新库，把所有表复制到新库，再删旧库完成的。*</strong></em></p>
+<h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a><strong>删除数据库</strong></h3><p><em>*<em>*方式*</em>*<em>1*</em>*<em>：删除指定的数据库，若数据库不存在，则报错。*</em>*</em></p>
+<p>​    <em>*<em>*DROP DATABASE*</em> *<em>数据库名*</em>**;*</em>**</p>
+<p><em>*<em>*方式*</em>*<em>2*</em>*<em>：删除指定的数据库（*</em> *<em>推荐*</em> *<em>）*</em>*</em></p>
+<p>​    <em><strong>*DROP DATABASE IF EXISTS** **数据库名，若数据库不存在，则默默结束，不会报错。*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248052140.png" alt="img"></p>
+<h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a><strong>创建表</strong></h2><h3 id="创建方式1"><a href="#创建方式1" class="headerlink" title="创建方式1"></a><strong>创建方式1</strong></h3><p><strong>必须具备：</strong></p>
+<p>​    1.CREATE TABLE权限</p>
+<p>​    2.存储空间</p>
+<p><strong>语法格式：</strong></p>
+<p>​    <strong>CREATE TABLE</strong> <em>*<em>*[*</em>*<em>IF NOT EXISTS*</em>**]*</em> *<em>表名*</em>*<em>(*</em>**</p>
+<p>​    <em>*<em>*字段1,*</em> *<em>数据类型*</em> **[*</em>*<em>约束条件*</em>*<em>] [*</em>*<em>默认值*</em>*<em>],*</em>**</p>
+<p>​    <em>*<em>*字段2,*</em> *<em>数据类型*</em> **[*</em>*<em>约束条件*</em>*<em>] [*</em>*<em>默认值*</em>*<em>],*</em>**</p>
+<p>​    <em>*<em>*字段3,*</em> *<em>数据类型*</em> **[*</em>*<em>约束条件*</em>*<em>] [*</em>*<em>默认值*</em>*<em>],*</em>**</p>
+<p>​    <em><strong>*……*</strong></em></p>
+<p>​    <em>*<em>*[表约束条件*</em>**]*</em>**</p>
+<p>​    <em><strong>*);*</strong></em></p>
+<p>​    <strong>加上了IF NOT EXISTS</strong> <em><strong>*关键字，则表示：如果当前数据库中不存在要创建的数据表，则创建数据表；*</strong></em></p>
+<p>​    <em><strong>*如果当前数据库中已经存在要创建的数据表，则忽略建表语句，不再创建数据表。*</strong></em></p>
+<p><strong>必须指定：</strong></p>
+<p>​    1.表名</p>
+<p>​    2.列名( 或字段名 ) ，数据类型， <strong>长度</strong></p>
+<p><strong>可选指定：</strong></p>
+<p>​    1.约束条件</p>
+<p>​    2.默认值</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248052186.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248052188.png" alt="img"></p>
+<p><strong>注：</strong></p>
+<p>​    <strong>1.MySQL在执行建表语句时，将id字段的类型设置为int(11)，这里的11实际上是int类型指定的显示宽度，默认的显示宽度为11。也可以在创建数据表的时候指定数据的显示宽度。</strong></p>
+<p>​    <strong>2.在MySQL 8.x版本中，不再推荐为INT类型指定显示长度，并在未来的版本中可能去掉这样的语法。</strong></p>
+<h3 id="创建方式2"><a href="#创建方式2" class="headerlink" title="创建方式2"></a><strong>创建方式2</strong></h3><p>​    使用 AS subquery 选项， <strong>将创建表和插入数据结合起来</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248052200.png" alt="img"></p>
+<p>​    指定的列和子查询中的列要一一对应</p>
+<p>​    通过列名和默认值定义列</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248062206.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248062208.png" alt="img"></p>
+<h4 id="练习1：创建一个表emplooyees-copy-实现对employees表的复制，包括数据"><a href="#练习1：创建一个表emplooyees-copy-实现对employees表的复制，包括数据" class="headerlink" title="练习1：创建一个表emplooyees_copy,实现对employees表的复制，包括数据"></a>练习1：创建一个表emplooyees_copy,实现对employees表的复制，包括数据</h4><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248072212.png" alt="img"></p>
+<h4 id="练习2：创建一个表emplooyees-blank-实现对employees表的复制，不包括数据"><a href="#练习2：创建一个表emplooyees-blank-实现对employees表的复制，不包括数据" class="headerlink" title="练习2：创建一个表emplooyees_blank,实现对employees表的复制，不包括数据"></a>练习2：创建一个表emplooyees_blank,实现对employees表的复制，不包括数据</h4><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248072216.png" alt="img"></p>
+<h2 id="修改表"><a href="#修改表" class="headerlink" title="修改表"></a><strong>修改表</strong></h2><p>修改表指的是修改数据库中已经存在的数据表的结构。</p>
+<p><strong>使用</strong> <em><strong>*ALTER TABLE*</strong></em> <strong>语句可以实现：</strong></p>
+<p>​    <strong>1.向已有的表中添加列</strong></p>
+<p>​    <em><strong>*2.修改现有表中的列*</strong></em></p>
+<p>​    <em><strong>*3.删除现有表中的列*</strong></em></p>
+<p>​    <em><strong>*4.重命名现有表中的列*</strong></em></p>
+<h3 id="追加一个列"><a href="#追加一个列" class="headerlink" title="追加一个列"></a><strong>追加一个列</strong></h3><p><strong>语法格式如下：</strong></p>
+<p>​    <strong>ALTER TABLE</strong> <em>*<em>*表名*</em> *<em>ADD*</em> *<em>【*</em>*<em>COLUMN*</em>*<em>】 字段名 字段类型 【*</em>*<em>FIRST|*</em>*<em>AFTER*</em> *<em>字段名】*</em>**;*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248072240.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248082242.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248082244.png" alt="img"></p>
+<h3 id="修改一个列"><a href="#修改一个列" class="headerlink" title="修改一个列"></a><strong>修改一个列</strong></h3><p><em>*<em>*可以修改列的*</em>*<em>数据类型，长度、默认值和位置*</em>*</em></p>
+<p><em><strong>*修改字段数据类型、长度、默认值、位置的语法格式如下：*</strong></em></p>
+<p>​    <em><strong>*ALTER TABLE** **表名*</strong></em></p>
+<p>​    <em>*<em>*MODIFY*</em> *<em>【*</em>*<em>COLUMN*</em>*<em>】 字段名*</em>*<em>1*</em> *<em>字段类型 【*</em>*<em>DEFAULT*</em> *<em>默认值】【*</em>*<em>FIRST|*</em>*<em>AFTER*</em> *<em>字段名2】*</em>**;*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248082258.png" alt="img"></p>
+<h3 id="重命名一个列"><a href="#重命名一个列" class="headerlink" title="重命名一个列"></a><strong>重命名一个列</strong></h3><p>​    <em><strong>*使用 CHANGE old_column new_column dataType*</strong></em> <strong>子句重命名列。</strong></p>
+<p><em><strong>*语法格式如下：*</strong></em></p>
+<p>​    <strong>ALTER TABLE</strong> <em>*<em>*表名*</em> *<em>CHANGE*</em> *<em>【*</em>*<em>column*</em>*<em>】 列名 新列名 新数据类型*</em>**;*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248092268.png" alt="img"></p>
+<h3 id="删除一个列"><a href="#删除一个列" class="headerlink" title="删除一个列"></a><strong>删除一个列</strong></h3><p><em><strong>*删除表中某个字段的语法格式如下：*</strong></em></p>
+<p>​    <em>*<em>*ALTER TABLE*</em> *<em>表名*</em> *<em>DROP*</em> *<em>【*</em>*<em>COLUMN*</em>*<em>】字段名;*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248092278.png" alt="img"></p>
+<h2 id="重命名表"><a href="#重命名表" class="headerlink" title="重命名表"></a><strong>重命名表</strong></h2><p><em>*<em>*方式一：使用*</em>*<em>RENAME*</em>*</em></p>
+<p>​    <strong>语法格式：</strong></p>
+<p>​        <em><strong>*REMANE TABLE 表名*</strong></em></p>
+<p>​        <strong>TO 新表名；</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248092290.png" alt="img"></p>
+<p> <strong><em>*方式二：*</em> 使用ALTER</strong></p>
+<p>​     <strong>语法格式：</strong></p>
+<p>​        <em><strong>*ALTER TABLE 表名*</strong></em></p>
+<p>​        <strong>RENAME 【TO】 新表名；</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248102300.png" alt="img"></p>
+<h2 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a><strong>删除表</strong></h2><p>​    在MySQL 中，当一张数据表 没有与其他任何数据表形成关联关系 时，可以将<strong>当前数据表直接删除。</strong></p>
+<p>​    <strong>数据和结构都被删除</strong></p>
+<p>​    <em><strong>*所有正在运行的相关事务被提交*</strong></em></p>
+<p>​    <em><strong>*所有相关索引被删除*</strong></em></p>
+<p>​     <em><strong>*DROP TABLE 语句不能回滚（即无法撤销。删除了就找不回来了，除非有备份）*</strong></em></p>
+<p><em><strong>*语法格式：*</strong></em></p>
+<p>​    <em>*<em>*DROP TABLE*</em> **[*</em>*<em>IF EXISTS*</em>*<em>]*</em> *<em>数据表*</em>*<em>1 [,*</em> *<em>数据表*</em>*<em>2, …,*</em> *<em>数据表*</em>*<em>n];*</em>**</p>
+<p>IF EXISTS 的含义为：如果当前数据库中存在相应的数据表，则删除数据表；如果当前数据库中不存 在相应的数据表，则忽略删除语句，不再执行删除数据表的操作。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248102324.png" alt="img"></p>
+<h2 id="清空表"><a href="#清空表" class="headerlink" title="清空表"></a><strong>清空表</strong></h2><h3 id="TRUNCATE-TABLE语句"><a href="#TRUNCATE-TABLE语句" class="headerlink" title="TRUNCATE TABLE语句"></a><strong>TRUNCATE TABLE语句</strong></h3><p><strong>TRUNCATE TABLE</strong> <strong>语</strong> <strong>句：</strong></p>
+<p>​    <em><strong>*1.删除表中所有的数据,保留表结构*</strong></em></p>
+<p>​    <em><strong>*2.释放表的存储空间*</strong></em></p>
+<p><strong>语法格式：</strong></p>
+<p>​    <em><strong>*TRUNCATE TABLE** **表名;*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248102342.png" alt="img"></p>
+<h3 id="DELETE-FROM语句："><a href="#DELETE-FROM语句：" class="headerlink" title="DELETE FROM语句："></a><strong>DELETE FROM语句：</strong></h3><p><strong>语法格式：</strong></p>
+<p>​     <strong>DELETE FROM</strong> <em><strong>*表名;(可以加过滤条件，表示删除部分数据)*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248112352.png" alt="img"></p>
+<h3 id="对比-TRUNCATE-TABLE-与-DELETE-FROM"><a href="#对比-TRUNCATE-TABLE-与-DELETE-FROM" class="headerlink" title="对比 TRUNCATE TABLE 与 DELETE FROM"></a>对比 TRUNCATE TABLE 与 DELETE FROM</h3><h4 id="对比-TRUNCATE-TABLE-与-DELETE-FROM-1"><a href="#对比-TRUNCATE-TABLE-与-DELETE-FROM-1" class="headerlink" title="对比 TRUNCATE TABLE 与 DELETE FROM"></a>对比 TRUNCATE TABLE 与 DELETE FROM</h4><p><strong>相同点： 都可以实现对表中所有数据的删除，同时保留数据结构</strong></p>
+<p><strong>不同点：</strong></p>
+<p>​    <em><strong>*TRUNCATE TABLE：一旦执行此操作，表数据全部删除。同时，数据是不可以回滚的*</strong></em></p>
+<p>​    <em><strong>*DELETE FROM：一旦执行此操作，表数据可以全部删除（不带where）。同时，数据*</strong></em></p>
+<p>​                   <em><strong>*是可以实现回滚的*</strong></em></p>
+<p><em><strong>*说明：*</strong></em></p>
+<p>​    <em>*<em>*1.TRUNCATE TABLE 比*</em> *<em>DELETE*</em> *<em>速度快，且使用的系统和事务日志资源少，但*</em> *<em>TRUNCATE*</em> *<em>无 事务且不触发 TRIGGER*</em>*<em>，有可能造成事故，故*</em>*<em>不建议在开发代码中使用此语句。*</em>*</em></p>
+<p>​    <em><strong>*2.TRUNCATE TABLE 在功能上与不带** *<em>WHERE*</em> *<em>子句的*</em> *<em>DELETE*</em> **语句相同。*</strong></em></p>
+<h4 id="DCL中的COMMIT和ROLLBACK拓展"><a href="#DCL中的COMMIT和ROLLBACK拓展" class="headerlink" title="DCL中的COMMIT和ROLLBACK拓展"></a>DCL中的COMMIT和ROLLBACK拓展</h4><p>COMMIT : 提交数据。一旦执行此操作，则数据被永久的保存在了数据库中，意味着数据不</p>
+<p>​         可以回滚。</p>
+<p>ROLLBACK : 一旦执行此操作，则可以实现数据回滚。回滚到最近一次COMMIT之后。</p>
+<h4 id="DDL-与-DML-说明"><a href="#DDL-与-DML-说明" class="headerlink" title="DDL 与 DML 说明"></a>DDL 与 DML 说明</h4><p>​    1.DDL的操作一旦执行，就不可以回滚。指令SET autocommit &#x3D; FALSE 对DDL操作失效（因为在执行完DDL操作之后，一定会执行一此COMMIT。而此COMMIT操作不受</p>
+<p>SET autocommit &#x3D; FALSE 影响的）</p>
+<p>​    2.DML的默认操作情况，一旦执行，也是不可以回滚的。但是，如果在执行DML之前，执行了 SET autocommit &#x3D; FALSE ，则执行操作就可以实现回滚。</p>
+<h4 id="TRUNCATE-TABLE-与-DELETE-FROM回滚演示"><a href="#TRUNCATE-TABLE-与-DELETE-FROM回滚演示" class="headerlink" title="TRUNCATE TABLE 与 DELETE FROM回滚演示"></a>TRUNCATE TABLE 与 DELETE FROM回滚演示</h4><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248122394.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248122396.png" alt="img"></p>
+<h2 id="内容拓展"><a href="#内容拓展" class="headerlink" title="内容拓展"></a><strong>内容拓展</strong></h2><h3 id="拓展1：阿里巴巴《Java开发手册》之MySQL字段命名"><a href="#拓展1：阿里巴巴《Java开发手册》之MySQL字段命名" class="headerlink" title="拓展1：阿里巴巴《Java开发手册》之MySQL字段命名"></a><strong>拓展1：阿里巴巴《Java开发手册》之MySQL字段命名</strong></h3><p>【 强制 】表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间</p>
+<p>​        只出 现数字。数据库字段名的修改代价很大，因为无法进行预发布，所以字段名</p>
+<p>​        称需要慎重考虑。</p>
+<p>​            正例：aliyun_admin，rdc_config ， level3_name</p>
+<p>​            反例：AliyunAdmin，rdcConfig ， level_3_name</p>
+<p>【 强制 】禁用保留字，如 desc 、 range 、 match 、 delayed 等，请参考 MySQL 官方保留</p>
+<p>​        字。</p>
+<p>【 强制 】表必备三字段： id, gmt_create, gmt_modified 。</p>
+<p>​        说明：其中 id 必为主键，类型为 BIGINT UNSIGNED 、单表时自增、步长为 1 。</p>
+<p>​              gmt_create, gmt_modified 的类型均为 DATETIME 类型，前者现在时表示</p>
+<p>​              主动式创建，后者过去分词表示被动式更新</p>
+<p>【 推荐 】表的命名最好是遵循 “ 业务名称 _ 表的作用 ” 。</p>
+<p>​        正例：alipay_task 、 force_project 、 trade_config</p>
+<p>【 推荐 】库名与应用名称尽量一致。</p>
+<p>【参考】合适的字符存储长度，不但节约数据库表空间、节约索引存储，更重要的是提升检</p>
+<p>​        索速度。</p>
+<p>​        正例：无符号值可以避免误存负数，且扩大了表示范围。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248132438.png" alt="img"></p>
+<h3 id="拓展2：如何理解清空表、删除表等操作需谨慎？！"><a href="#拓展2：如何理解清空表、删除表等操作需谨慎？！" class="headerlink" title="拓展2：如何理解清空表、删除表等操作需谨慎？！"></a><strong>拓展2：如何理解清空表、删除表等操作需谨慎？！</strong></h3><p>​    表删除 操作将把表的定义和表中的数据一起删除，并且 MySQL 在执行删除操作时，不会有任何的确认信 息提示，因此执行删除操时应当慎重。在删除表前，最好对表中的数据进行 备份 ，这样当操作失误时可 以对数据进行恢复，以免造成无法挽回的后果。</p>
+<p>​    同样的，在使用 ALTER TABLE 进行表的基本修改操作时，在执行操作过程之前，也应该确保对数据进 行完整的 备份 ，因为数据库的改变是 无法撤销 的，如果添加了一个不需要的字段，可以将其删除；相 同的，如果删除了一个需要的列，该列下面的所有数据都将会丢失。</p>
+<h3 id="拓展3：MySQL8新特性—DDL的原子化"><a href="#拓展3：MySQL8新特性—DDL的原子化" class="headerlink" title="拓展3：MySQL8新特性—DDL的原子化"></a><strong>拓展3：MySQL8新特性—DDL的原子化</strong></h3><p>​    在MySQL 8.0 版本中， InnoDB 表的 DDL 支持事务完整性，即 DDL 操作要么成功要么回滚 。 DDL 操作回滚日志写入到data dictionary 数据字典表 mysql.innodb_ddl_log （该表是隐藏的表，通过 show tables 无法看到）中，用于回滚操作。通过设置参数，可将DDL 操作日志打印输出到 MySQL 错误日志中。</p>
+<p>分别在 MySQL 5.7 版本和 MySQL 8.0 版本中创建数据库和数据表，结果如下：</p>
+<p><em>*<em>*（1）在*</em>*<em>MySQL 5.7*</em>*<em>版本中，测试：*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248132456.png" alt="img"></p>
+<p> 从结果可以看出，虽然删除操作时报错了，但是仍然删除了数据表book1</p>
+<p><em>*<em>*（2）在*</em>*<em>MySQL 8.0*</em>*<em>版本中，测试如下：*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248132464.png" alt="img"></p>
+<p> 从结果可以看出，数据表book1并没有被删除。</p>
+<h2 id="练习-4"><a href="#练习-4" class="headerlink" title="练习"></a>练习</h2><h3 id="创建数据库test01-office-指明字符集为utf8。并在此数据库下执行下述操作"><a href="#创建数据库test01-office-指明字符集为utf8。并在此数据库下执行下述操作" class="headerlink" title="创建数据库test01_office,指明字符集为utf8。并在此数据库下执行下述操作"></a>创建数据库test01_office,指明字符集为utf8。并在此数据库下执行下述操作</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248132472.png" alt="img"></p>
+<h3 id="创建表dept01"><a href="#创建表dept01" class="headerlink" title="创建表dept01"></a>创建表dept01</h3><p>&#x2F;*</p>
+<p>字段 类型</p>
+<p>id INT(7)</p>
+<p>NAME VARCHAR(25)</p>
+<p>*&#x2F;</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248142488.png" alt="img"></p>
+<h3 id="将表departments中的数据插入新表dept02中"><a href="#将表departments中的数据插入新表dept02中" class="headerlink" title="将表departments中的数据插入新表dept02中"></a>将表departments中的数据插入新表dept02中</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248142494.png" alt="img"></p>
+<h3 id="创建表emp01"><a href="#创建表emp01" class="headerlink" title="创建表emp01"></a>创建表emp01</h3><p>&#x2F;*</p>
+<p>字段 类型</p>
+<p>id INT(7)</p>
+<p>first_name VARCHAR (25)</p>
+<p>last_name VARCHAR(25)</p>
+<p>dept_id INT(7)</p>
+<p>*&#x2F;</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248142512.png" alt="img"></p>
+<h3 id="将emp01中列last-name的长度增加到50"><a href="#将emp01中列last-name的长度增加到50" class="headerlink" title="将emp01中列last_name的长度增加到50"></a>将emp01中列last_name的长度增加到50</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248152518.png" alt="img"></p>
+<h3 id="根据表employees创建emp02"><a href="#根据表employees创建emp02" class="headerlink" title="根据表employees创建emp02"></a>根据表employees创建emp02</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248152524.png" alt="img"></p>
+<h3 id="删除表emp01"><a href="#删除表emp01" class="headerlink" title="删除表emp01"></a>删除表emp01</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248152530.png" alt="img"></p>
+<h3 id="将表emp02重命名为emp01"><a href="#将表emp02重命名为emp01" class="headerlink" title="将表emp02重命名为emp01"></a>将表emp02重命名为emp01</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248152536.png" alt="img"></p>
+<h3 id="在表dept02和emp01中添加新列test-column，并检查所作的操作"><a href="#在表dept02和emp01中添加新列test-column，并检查所作的操作" class="headerlink" title="在表dept02和emp01中添加新列test_column，并检查所作的操作"></a>在表dept02和emp01中添加新列test_column，并检查所作的操作</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248162542.png" alt="img"></p>
+<h3 id="直接删除表emp01中的列-department-id"><a href="#直接删除表emp01中的列-department-id" class="headerlink" title="直接删除表emp01中的列 department_id"></a>直接删除表emp01中的列 department_id</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248162548.png" alt="img"></p>
+<h1 id="MySQL-数据处理之增删改"><a href="#MySQL-数据处理之增删改" class="headerlink" title="MySQL 数据处理之增删改"></a>MySQL 数据处理之增删改</h1><h2 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a><strong>插入数据</strong></h2><h3 id="方式1：VALUES的方式添加"><a href="#方式1：VALUES的方式添加" class="headerlink" title="方式1：VALUES的方式添加"></a><strong>方式1：VALUES的方式添加</strong></h3><p>​    <em>*<em>*使用这种语法一次只能向表中插入*</em>*<em>一条*</em>*<em>数据。*</em>*</em></p>
+<h4 id="情况1：为表的所有字段按默认顺序插入数据"><a href="#情况1：为表的所有字段按默认顺序插入数据" class="headerlink" title="情况1：为表的所有字段按默认顺序插入数据"></a><strong>情况1：为表的所有字段按默认顺序插入数据</strong></h4><p><strong>语法格式:</strong></p>
+<p>​    <em><strong>*INSERT INTO 表名*</strong></em></p>
+<p>​    <em><strong>*VALUES (value1,value2,….);*</strong></em></p>
+<p>​    值列表中需要为表的每一个字段指定值，并且值的顺序必须和数据表中字段定义时的顺序相同。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248162568.png" alt="img"></p>
+<h4 id="情况2：为表的指定字段插入数据"><a href="#情况2：为表的指定字段插入数据" class="headerlink" title="情况2：为表的指定字段插入数据"></a><strong>情况2：为表的指定字段插入数据</strong></h4><p><strong>语法格式：</strong></p>
+<p>​    <em>*<em>*INSERT INTO*</em> *<em>表名*</em>**(column1 [, column2, …, columnn])*</em>**</p>
+<p>​    <em>*<em>*VALUES*</em> **(value1 [,value2, …, valuen]);*</em>**</p>
+<p>​     为表的指定字段插入数据，就是在INSERT语句中只向部分字段中插入值，而其他字段的值为表定义时的默认值。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248172582.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248172584.png" alt="img"></p>
+<h4 id="情况3：同时插入多条记录"><a href="#情况3：同时插入多条记录" class="headerlink" title="情况3：同时插入多条记录"></a><strong>情况3：同时插入多条记录</strong></h4><p>​    <em><strong>*INSERT语句可以同时向数据表中插入多条记录，插入时指定多个值列表，每个值列表之间用逗号分隔开。*</strong></em></p>
+<p><strong>语法格式：</strong></p>
+<p>​    <strong>INSERT INTO table_name</strong></p>
+<p>​    <em><strong>*VALUES*</strong></em></p>
+<p>​    <em><strong>*(value1 [,value2, …, valuen]),*</strong></em></p>
+<p>​    <em><strong>*(value1 [,value2, …, valuen]),*</strong></em></p>
+<p>​    <em><strong>*……*</strong></em></p>
+<p>​    <em><strong>*(value1 [,value2, …, valuen]);*</strong></em></p>
+<p>​    或</p>
+<p>​    <strong>INSERT INTO table_name</strong> <em><strong>*(column1 [, column2, …, columnn])*</strong></em></p>
+<p>​    <em><strong>*VALUES*</strong></em></p>
+<p>​    <em><strong>*(value1 [,value2, …, valuen]),*</strong></em></p>
+<p>​    <em><strong>*(value1 [,value2, …, valuen]),*</strong></em></p>
+<p>​    <em><strong>*……*</strong></em></p>
+<p>​    <em><strong>*(value1 [,value2, …, valuen]);*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248172618.png" alt="img"></p>
+<p>说明：</p>
+<p>​    1.使用INSERT同时插入多条记录时，MySQL会返回一些在执行单行插入时没有的额外信息，这些信息的含 义如下： ●　Records：表明插入的记录条数。 ●　Duplicates：表明插入时被忽略的记录，原因可能是这 些记录包含了重复的主键值。 ●　Warnings：表明有问题的数据值，例如发生数据类型转换。</p>
+<p>​    *<em>2.*<em>一个同时插入多行记录的INSERT*</em>*<em>语句等同于多个单行插入的*</em>*<em>INSERT*</em>*<em>语句，但是多行的*</em>*<em>INSERT*</em>*<em>语句 在处理过程中*</em> *<em>效率更高*</em> *<em>。因为*</em>*<em>MySQL*</em>*<em>执行单条*</em>*<em>INSERT*</em>*<em>语句插入多行数据比使用多条*</em>*<em>INSERT*</em>*<em>语句 快，所以在插入多条记录时最好选择使用单条INSERT*</em>*<em>语句的方式插入。*</em></em>*</p>
+<h4 id="小结："><a href="#小结：" class="headerlink" title="小结："></a><strong>小结：</strong></h4><p>​    <em>*<em>*1.*</em> *<em>VALUES*</em> *<em>也可以写成*</em> *<em>VALUE*</em> *<em>，但是*</em>*<em>VALUES*</em>*<em>是标准写法。*</em>*</em></p>
+<p>​    <em><strong>*2. 字符和日期型数据应包含在单引号中。*</strong></em></p>
+<h3 id="方式2：将查询结果插入到表中"><a href="#方式2：将查询结果插入到表中" class="headerlink" title="方式2：将查询结果插入到表中"></a><strong>方式2：将查询结果插入到表中</strong></h3><p>​    INSERT还可以将 SELECT 语句查询的结果插入到表中，此时不需要把每一条记录的值一个一个输入，只需 要使用一条INSERT 语句和一条 SELECT 语句组成的组合语句即可快速地从一个或多个表中向一个表中插入 多行。</p>
+<p><strong>语法格式：</strong></p>
+<p>​    <em><strong>*INSERT INTO** **目标表名*</strong></em></p>
+<p>​    <em><strong>*(tar_column1 [, tar_column2, …, tar_columnn])*</strong></em></p>
+<p>​    <em><strong>*SELECT*</strong></em></p>
+<p>​    <em><strong>*(src_column1 [, src_column2, …, src_columnn])*</strong></em></p>
+<p>​    <em><strong>*FROM** **源表名*</strong></em></p>
+<p>​    <em>*<em>*[*</em>*<em>WHERE condition*</em>**]*</em>**</p>
+<p><strong>说明：</strong></p>
+<p>​    <em><strong>*1.在 INSERT** **语句中加入子查询。*</strong></em></p>
+<p>​    <em><strong>*2.不必书写 VALUES** **子句。*</strong></em></p>
+<p>​    <em><strong>*3.子查询中的值列表应与 INSERT** **子句中的列名对应。*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248182660.png" alt="img"></p>
+<p><strong>注意：</strong></p>
+<p>​    <strong>1.查询字段的数据类型必须要与添加到的表的字段的数据类型一一对应</strong></p>
+<p>​    <strong>2.添加到的表的字段的长度不能低于查询字段，否则存在添加不成功的风险。</strong></p>
+<h2 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a><strong>更新数据</strong></h2><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248182670.png" alt="img"></p>
+<p> <em><strong>*使用** *<em>UPDATE*</em> **语句更新数据。语法如下：*</strong></em></p>
+<p>​     <strong>UPDATE table_name</strong></p>
+<p>​    <strong>SET column1&#x3D;value1, column2&#x3D;value2, … , column&#x3D;valuen</strong></p>
+<p>​    <strong>[WHERE condition]</strong></p>
+<p>可以一次更新 <strong>多条</strong> 数据。</p>
+<p>如果需要回滚数据，需要保证在 DML 前，进行设置： <strong>SET AUTOCOMMIT &#x3D; FALSE;</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248192684.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248192686.png" alt="img"></p>
+<p><strong>注：在添加、修改或删除数据时，是可能存在不成功的。（可能时由于约束的影响）</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248192690.png" alt="img"></p>
+<h2 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a><strong>删除数据</strong></h2><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248202696.png" alt="img"></p>
+<p><em><strong>*使用** *<em>DELETE*</em> **语句从表中删除数据，语法格式如下：*</strong></em></p>
+<p>​    <strong>DELETE FROM table_name</strong></p>
+<p>​    <em>*<em>*[*</em>*<em>WHERE*</em> **&lt;****condition**** **&gt;];</em>*</p>
+<p>​    <em>*<em>*table_name指定要执行删除操作的表；*</em>*<em>“[WHERE ]”*</em>*<em>为可选参数，指定删除条件，如果没有*</em>*<em>WHERE*</em>*<em>子句， DELETE语句将删除表中的所有记录。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248202708.png" alt="img"></p>
+<p><strong>注：在添加、修改或删除数据时，是可能存在不成功的。（可能时由于约束的影响）</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248212714.png" alt="img"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><strong>小结</strong></h2><p>​    <strong>1.DML操作在默认情况下，执行完以后都会自动提交数据，如果希望执行完以后，不自动提交数据，则需要使用SET autocommit &#x3D; FALSE;</strong></p>
+<p>​    <em><strong>*2.在添加、修改或删除数据时，是可能存在不成功的。（可能时由于约束的影响）*</strong></em></p>
+<p>​    <strong>3.基本语法：</strong></p>
+<p>​       <strong>添加：方式1：</strong></p>
+<p>​            <em><strong>*INSERT INTO 表名*</strong></em></p>
+<p>​            <strong>VALUES (value1,value2,….);</strong></p>
+<p>​            <em><strong>*方式2：*</strong></em></p>
+<p>​            <em><strong>*INSERT INTO 目标表名*</strong></em> <strong>(tar_column1 [, tar_column2, …, tar_columnn])</strong></p>
+<p>​            <strong>SELECT</strong> <strong>(src_column1 [, src_column2, …, src_columnn])</strong></p>
+<p>​            <strong>FROM 源表名</strong></p>
+<p>​            <strong>[WHERE condition]</strong></p>
+<p>​      <strong>更新（修改）：</strong></p>
+<p>​            <strong>UPDATE table_name</strong></p>
+<p>​            <strong>SET column1&#x3D;value1, column2&#x3D;value2, … , column&#x3D;valuen</strong></p>
+<p>​            <strong>[WHERE condition]</strong></p>
+<p>​       <strong>删除：</strong>            </p>
+<p>​             <strong>DELETE FROM table_name</strong></p>
+<p>​            <strong>[WHERE <condition>];</strong></p>
+<p>​            </p>
+<h2 id="mysql8-0新特性-计算列"><a href="#mysql8-0新特性-计算列" class="headerlink" title="mysql8.0新特性:计算列"></a>mysql8.0新特性:计算列</h2><p>​    什么叫计算列呢？简单来说就是某一列的值是通过别的列计算得来的。例如，a 列值为 1 、 b 列值为 2 ， c 列 不需要手动插入，定义a+b 的结果为 c 的值，那么 c 就是计算列，是通过别的列计算得来的。</p>
+<p>​    在MySQL 8.0 中， CREATE TABLE 和 ALTER TABLE 中都支持增加计算列。下面以 CREATE TABLE 为例进行讲解。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248212764.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248212766.png" alt="img"></p>
+<h2 id="练习-5"><a href="#练习-5" class="headerlink" title="练习"></a>练习</h2><h3 id="创建数据库dbtest11"><a href="#创建数据库dbtest11" class="headerlink" title="创建数据库dbtest11"></a>创建数据库dbtest11</h3><p>CREATE DATABASE IF NOT EXISTS dbtest11 CHARACTER SET ‘utf8’ ;</p>
+<h3 id="运行以下脚本创建表my-employees"><a href="#运行以下脚本创建表my-employees" class="headerlink" title="运行以下脚本创建表my_employees"></a>运行以下脚本创建表my_employees</h3><p>USE dbtest11;</p>
+<p>CREATE TABLE my_employees(</p>
+<p> id INT ( 10 ),</p>
+<p> first_name VARCHAR ( 10 ),</p>
+<p> last_name VARCHAR ( 10 ),</p>
+<p> userid VARCHAR ( 10 ),</p>
+<p> salary DOUBLE ( 10 , 2 )</p>
+<p>);</p>
+<p>CREATE TABLE users(</p>
+<p> id INT ,</p>
+<p> userid VARCHAR ( 10 ),</p>
+<p> department_id INT</p>
+<p>);</p>
+<h3 id="显示表my-employees的结构"><a href="#显示表my-employees的结构" class="headerlink" title="显示表my_employees的结构"></a>显示表my_employees的结构</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248212806.png" alt="img"></p>
+<h3 id="向my-employees表中插入下列数据"><a href="#向my-employees表中插入下列数据" class="headerlink" title="向my_employees表中插入下列数据"></a>向my_employees表中插入下列数据</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248222812.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248222816.png" alt="img"></p>
+<h3 id="向users表中插入数据"><a href="#向users表中插入数据" class="headerlink" title="向users表中插入数据"></a>向users表中插入数据</h3><p>1 Rpatel 10</p>
+<p>2 Bdancs 10</p>
+<p>3 Bbiri 20</p>
+<p>4 Cnewman 30</p>
+<p>5 Aropebur 40</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248222832.png" alt="img"></p>
+<h3 id="将3号员工的last-name修改为“drelxer”"><a href="#将3号员工的last-name修改为“drelxer”" class="headerlink" title="将3号员工的last_name修改为“drelxer”"></a>将3号员工的last_name修改为“drelxer”</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248222838.png" alt="img"></p>
+<h3 id="将所有工资少于900的员工的工资修改为1000"><a href="#将所有工资少于900的员工的工资修改为1000" class="headerlink" title="将所有工资少于900的员工的工资修改为1000"></a>将所有工资少于900的员工的工资修改为1000</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248232844.png" alt="img"></p>
+<h3 id="将userid为Bbiri的user表和my-employees表的记录全部删除"><a href="#将userid为Bbiri的user表和my-employees表的记录全部删除" class="headerlink" title="将userid为Bbiri的user表和my_employees表的记录全部删除"></a>将userid为Bbiri的user表和my_employees表的记录全部删除</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248232850.png" alt="img"></p>
+<h3 id="删除my-employees、users表所有数据"><a href="#删除my-employees、users表所有数据" class="headerlink" title="删除my_employees、users表所有数据"></a>删除my_employees、users表所有数据</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248232856.png" alt="img"></p>
+<h3 id="检查所作的修正"><a href="#检查所作的修正" class="headerlink" title="检查所作的修正"></a>检查所作的修正</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248242862.png" alt="img"></p>
+<h3 id="清空表my-employees"><a href="#清空表my-employees" class="headerlink" title="清空表my_employees"></a>清空表my_employees</h3><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248242868.png" alt="img"></p>
+<h1 id="MySQL中的数据类型-1"><a href="#MySQL中的数据类型-1" class="headerlink" title="MySQL中的数据类型"></a><strong>MySQL中的数据类型</strong></h1><table>
+<thead>
+<tr>
+<th><em><strong>*类型*</strong></em></th>
+<th><em><strong>*类型举例*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*整数类型*</strong></em></td>
+<td><em>*<em>*TINYINT*</em>*<em>、*</em>*<em>SMALLINT*</em>*<em>、*</em>*<em>MEDIUMINT*</em>*<em>、*</em>*<em>INT(*</em>*<em>或*</em>*<em>INTEGER)*</em>*<em>、*</em>*<em>BIGINT*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*浮点类型*</strong></em></td>
+<td><em>*<em>*FLOAT*</em>*<em>、*</em>*<em>DOUBLE*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*定点数类型*</strong></em></td>
+<td><em><strong>*DECIMAL*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*位类型*</strong></em></td>
+<td><em><strong>*BIT*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*日期时间类型*</strong></em></td>
+<td><em>*<em>*YEAR*</em>*<em>、*</em>*<em>TIME*</em>*<em>、*</em>*<em>DATE*</em>*<em>、*</em>*<em>DATETIME*</em>*<em>、*</em>*<em>TIMESTAMP*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*文本字符串类型*</strong></em></td>
+<td><em>*<em>*CHAR*</em>*<em>、*</em>*<em>VARCHAR*</em>*<em>、*</em>*<em>TINYTEXT*</em>*<em>、*</em>*<em>TEXT*</em>*<em>、*</em>*<em>MEDIUMTEXT*</em>*<em>、*</em>*<em>LONGTEXT*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*枚举类型*</strong></em></td>
+<td><em><strong>*ENUM*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*集合类型*</strong></em></td>
+<td><em><strong>*SET*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*二进制字符串类型*</strong></em></td>
+<td><em>*<em>*BINARY*</em>*<em>、*</em>*<em>VARBINARY*</em>*<em>、*</em>*<em>TINYBLOB*</em>*<em>、*</em>*<em>BLOB*</em>*<em>、*</em>*<em>MEDIUMBLOB*</em>*<em>、*</em>*<em>LONGBLOB*</em>*</em></td>
+</tr>
+<tr>
+<td><em>*<em>*JSON*</em>*<em>类型*</em>*</em></td>
+<td><em>*<em>*JSON*</em>*<em>对象、*</em>*<em>JSON*</em>*<em>数组*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*空间数据类型*</strong></em></td>
+<td><em>*<em>*单值类型：*</em>*<em>GEOMETRY*</em>*<em>、*</em>*<em>POINT*</em>*<em>、*</em>*</em>         <em>*<em>*LINESTRING、*</em>*<em>POLYGON*</em>*<em>；*</em>*</em><em>*<em>*集合类型：*</em>*<em>MULTIPOINT*</em>*<em>、*</em>*</em>         <em><strong>*MULTILINESTRING、*</strong></em>             <em><strong>*MULTIPOLYGON、*</strong></em>          <em><strong>*GEOMETRYCOLLECTION*</strong></em></td>
+</tr>
+</tbody></table>
+<p>常见数据类型的属性，如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>MySQL关键字</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*NULL*</strong></em></td>
+<td><em>*<em>*数据列可包含*</em>*<em>NULL*</em>*<em>值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*NOT NULL*</strong></em></td>
+<td><em>*<em>*数据列不允许包含*</em>*<em>NULL*</em>*<em>值*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*DEFAULT*</strong></em></td>
+<td><em><strong>*默认值*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*PRIMARY KEY*</strong></em></td>
+<td><em><strong>*主键*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*AUTO_INCREMENT*</strong></em></td>
+<td><em><strong>*自动递增，适用于整数类型*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*UNSIGNED*</strong></em></td>
+<td><em><strong>*无符号*</strong></em></td>
+</tr>
+<tr>
+<td><strong>CHARACTER SET name</strong></td>
+<td><strong>指定一个字符集</strong></td>
+</tr>
+</tbody></table>
+<p><strong>CHARACTER SET name使用：</strong></p>
+<p><strong>1.创建数据库时指定字符集</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248242902.png" alt="img"></p>
+<p> <strong>2.创建表的时候，指明表的的字符集</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248252906.png" alt="img"></p>
+<p> <strong>3.创建表，指明字段时，可以指定字段的字符集</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248252910.png" alt="img"></p>
+<h2 id="整数类型"><a href="#整数类型" class="headerlink" title="整数类型"></a><strong>整数类型</strong></h2><h3 id="类型介绍"><a href="#类型介绍" class="headerlink" title="类型介绍"></a><strong>类型介绍</strong></h3><p>​    整数类型一共有 <strong>5</strong> 种，包括 <em>*<em>*TINYINT*</em>*<em>、*</em>*<em>SMALLINT*</em>*<em>、*</em>*<em>MEDIUMINT*</em>*<em>、*</em>*<em>INT*</em>*<em>（*</em>*</em></p>
+<p><em>*<em>*INTEGER*</em>*<em>）和*</em> *<em>BIGINT*</em>*<em>。*</em>*</em></p>
+<p>​    它们的区别如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th><em>*<em>*</em>*整数类型****</em>*</th>
+<th><em>*<em>*</em>*字节****</em>*</th>
+<th><em>*<em>*</em>*有符号数取值范围****</em>*</th>
+<th><em>*<em>*</em>*无符号数取值范围****</em>*</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYINT</td>
+<td>1</td>
+<td>-128~127</td>
+<td>0~255</td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>2</td>
+<td>-32768~32767</td>
+<td>0~65535</td>
+</tr>
+<tr>
+<td>MEDIUMINT</td>
+<td>3</td>
+<td>-8388608~8388607</td>
+<td>0~16777215</td>
+</tr>
+<tr>
+<td>INT、INTEGER</td>
+<td>4</td>
+<td>-2147483648~2147483647</td>
+<td>0~4294967295</td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>8</td>
+<td>-9223372036854775808 ~9223372036854775807</td>
+<td>0~18446744073709551615</td>
+</tr>
+</tbody></table>
+<p>如代码：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248252934.png" alt="img"></p>
+<p>如代码：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248252940.png" alt="img"></p>
+<p> MySQL8.0演示结果：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248262946.png" alt="img"></p>
+<p> MySQL5.7演示结果：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248262950.png" alt="img"></p>
+<p> <strong>创建表、指明字段时，若未指明整型数据类型的长度，以上分别为各个类型的默认长度。</strong></p>
+<p> <em>*<em>*MySQL8*</em>*<em>中不再显式范围*</em>*</em></p>
+<h3 id="可选属性"><a href="#可选属性" class="headerlink" title="可选属性"></a><strong>可选属性</strong></h3><p><strong>整数类型的可选属性有三个：</strong></p>
+<h4 id="M"><a href="#M" class="headerlink" title="M"></a><strong>M</strong></h4><p>​    M : 表示显示宽度， M 的取值范围是 (0, 255) 。例如， int(5) ：当数据宽度小于 5 位的时候在数字前面需要用字符填满宽度。该项功能需要配合“ ZEROFILL ” 使用，表示用 “0” 填满宽度，否则指定显示宽度无效。</p>
+<p>​     如果设置了显示宽度，那么插入的数据宽度超过显示宽度限制，会不会截断或插入失败？</p>
+<p>​    答案：不会对插入的数据有任何影响，还是按照类型的实际宽度进行保存，即 <em><strong>*显示宽度与类型可以存储的值范围无关*</strong></em> 。 <strong>从</strong> <strong>MySQL 8.0.17</strong> <strong>开始，整数数据类型不推荐使用显示宽度属性。</strong></p>
+<p>​    整型数据类型可以在定义表结构时指定所需要的显示宽度，如果不指定，则系统为每一种类型指定默认的宽度值。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248262970.png" alt="img"></p>
+<h4 id="UNSIGNED"><a href="#UNSIGNED" class="headerlink" title="UNSIGNED"></a><strong>UNSIGNED</strong></h4><p>​    UNSIGNED : 无符号类型（非负），所有的整数类型都有一个可选的属性 UNSIGNE （无符号属性），无符号整数类型的最小取值为0 。所以，如果需要在 MySQL 数据库中保存非负整数值时，可以将整数类型设置为无符号类型。</p>
+<p>​    int类型默认显示宽度为 int(11) ，无符号 int 类型默认显示宽度为 int(10) 。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248262980.png" alt="img"></p>
+<h4 id="ZEROFILL"><a href="#ZEROFILL" class="headerlink" title="ZEROFILL"></a><strong>ZEROFILL</strong></h4><p>​    ZEROFILL : 0 填充 , （如果某列是 ZEROFILL ，那么 MySQL 会自动为当前列添加 UNSIGNED 属性），如果指定了ZEROFILL 只是表示不够 M 位时，用 0 在左边填充，如果超过 M 位，只要不超过数据存储范围即可。</p>
+<p>​    原来，在 int(M) 中， M 的值跟 int(M) 所占多少存储空间并无任何关系。 int(3) 、 int(4) 、 int(8) 在磁盘上都是占用 4 bytes 的存储空间。也就是说， <strong>int(M)</strong> <strong>，必须和</strong> <strong>UNSIGNED ZEROFILL</strong> <strong>一起使用才有意义。</strong> 如果整数值超过M 位，就按照实际位数存储。只是无须再用字符 0 进行填充</p>
+<h3 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a><strong>适用场景</strong></h3><p>​    <strong>TINYINT</strong> ：一般用于枚举数据，比如系统设定取值范围很小且固定的场景。</p>
+<p>​    <strong>SMALLINT</strong> ：可以用于较小范围的统计数据，比如统计工厂的固定资产库存数量等。</p>
+<p>​    <strong>MEDIUMINT</strong> ：用于较大整数的计算，比如车站每日的客流量等。</p>
+<p>​    <strong>INT</strong>、 <em><strong>*INTEGER*</strong></em> ：取值范围足够大，一般情况下不用考虑超限问题，用得最多。比如商品编号。</p>
+<p>​    <strong>BIGINT</strong> ：只有当你处理特别巨大的整数时才会用到。比如双十一的交易量、大型门户网站点击量、证券公司衍生产品持仓等。</p>
+<h3 id="如何选择？"><a href="#如何选择？" class="headerlink" title="如何选择？"></a><strong>如何选择？</strong></h3><p>​    在评估用哪种整数类型的时候，你需要考虑 存储空间 和 可靠性 的平衡问题：一方 面，用占用字节数少的整数类型可以节省存储空间；另一方面，要是为了节省存储空间， 使用的整数类型取值范围太小，一旦遇到超出取值范围的情况，就可能引起 系统错误 ，影响可靠性。</p>
+<p>​    举个例子，商品编号采用的数据类型是 INT 。原因就在于，客户门店中流通的商品种类较多，而且，每天都有旧商品下架，新商品上架，这样不断迭代，日积月累。</p>
+<p>如果使用 SMALLINT 类型，虽然占用字节数比 INT 类型的整数少，但是却不能保证数据不会超出范围65535。相反，使用 INT ，就能确保有足够大的取值范围，不用担心数据超出范围影响可靠性的问题。</p>
+<p>​    你要注意的是，在实际工作中， <strong>系统故障产生的成本远远超过增加几个字段存储空间所产生的成本</strong> 。因此，我建议你首先确保数据不会超过取值范围，在这个前提之下，再去考虑如何节省存储空间。</p>
+<h2 id="浮点类型"><a href="#浮点类型" class="headerlink" title="浮点类型"></a><strong>浮点类型</strong></h2><h3 id="类型介绍-1"><a href="#类型介绍-1" class="headerlink" title="类型介绍"></a><strong>类型介绍</strong></h3><p>​    浮点数和定点数类型的特点是可以 处理小数 ，你可以把整数看成小数的一个特例。因此，浮点数和定点数的使用场景，比整数大多了。 MySQL 支持的浮点数类型，分别是 <strong>FLOAT、DOUBLE、REAL。</strong></p>
+<p>​    FLOAT 表示单精度浮点数；</p>
+<p>​    DOUBLE 表示双精度浮点数；</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248263024.png" alt="img"></p>
+<p>​    REAL默认就是 DOUBLE 。如果你把 SQL 模式设定为启用 “ REAL_AS_FLOAT ” ，那 么， MySQL 就认为 REAL 是 FLOAT 。如果要启用 “REAL_AS_FLOAT” ，可以通过以下 SQL <strong>语句实现：SET sql_mode &#x3D; “REAL_AS_FLOAT”;</strong></p>
+<p><strong>问题</strong> <strong>1</strong> <strong>：</strong> FLOAT 和 DOUBLE 这两种数据类型的区别是啥呢？</p>
+<p>​    SET sql_mode &#x3D; “REAL_AS_FLOAT”; FLOAT 占用字节数少，取值范围小； DOUBLE 占用字节数多，取值范围也大。</p>
+<p><strong>问题</strong> <strong>2</strong> <strong>：</strong> 为什么浮点数类型的无符号数取值范围，只相当于有符号数取值范围的一半，也就是只相当于有符号数取值范围大于等于零的部分呢？</p>
+<p>​    MySQL 存储浮点数的格式为： 符号 (S) 、 尾数 (M) 和 阶码 (E) 。因此，无论有没有符号， MySQL 的浮点数都会存储表示符号的部分。因此， 所谓的无符号数取值范围，其实就是有符号数取值范围大于等于零的部分</p>
+<p><strong>3.2</strong> <strong>数据精度说明</strong></p>
+<p>​    对于浮点类型，在MySQL 中单精度值使用 4 个字节，双精度值使用 8 个字节。</p>
+<p>​    MySQL允许使用 非标准语法 （其他数据库未必支持，因此如果涉及到数据迁移，则最好不要这么用）： FLOAT(M,D) 或 DOUBLE(M,D) 。这里， M 称为 精度 ， D 称为 标度 。 <strong>(M,D)中 M&#x3D;整数位+小数位，D&#x3D;小数位。 D&lt;&#x3D;M&lt;&#x3D;255，0&lt;&#x3D;D&lt;&#x3D;30。</strong></p>
+<p>​    例如，定义为FLOAT(5,2) 的一个列可以显示为 -999.99-999.99 。如果超过这个范围会报错。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248273050.png" alt="img"></p>
+<p>​    FLOAT和 DOUBLE 类型在不指定 (M,D) 时，默认会按照实际的精度（由实际的硬件和操作系统决定）来显示。</p>
+<p>​    <strong>说明：浮点类型，也可以加</strong> <em>*<em>*UNSIGNED*</em> *<em>，但是不会改变数据范围，例如：*</em>*<em>FLOAT(3,2) UNSIGNED*</em>*<em>仍然只能表示0-9.99*</em>*<em>的范围。*</em>*</em></p>
+<p>​    不管是否显式设置了精度(M,D) ，这里 MySQL 的处理方案如下：</p>
+<p>​        <strong>如果存储时，整数部分超出了范围，MySQL就会报错，不允许存这样的值</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248273060.png" alt="img"></p>
+<p>​        </p>
+<p>​        <em><strong>*如果存储时，小数点部分若超出范围，就分以下情况：*</strong></em></p>
+<p>​            <em>*<em>*若四舍五入后，整数部分没有超出范围，则只警告，但能成功操作并四舍五入删除多余的小数位后保存。例如在FLOAT(5,2)*</em>*<em>列内插入*</em>*<em>999.009*</em>*<em>，近似结果是*</em>*<em>999.01*</em>*<em>。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248273070.png" alt="img"></p>
+<p>​            <em>*<em>*若四舍五入后，整数部分超出范围，则MySQL报错，并拒绝处理。如FLOAT(5,2)*</em>*<em>列内插入999.995和*</em>**-999.995*</em>*<em>都会报错。*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248283076.png" alt="img"></p>
+<p>​    <strong>从MySQL 8.0.17</strong> <strong>开始，</strong> <strong>FLOAT(M,D)</strong> <strong>和</strong> <strong>DOUBLE(M,D)</strong> <strong>用法在官方文档中已经明确不推荐使用</strong> ，将来可能被移除。另外，关于浮点型FLOAT 和 DOUBLE 的 <em><strong>*UNSIGNED*</strong></em> 也不推荐使用了，将来也可能被移除。</p>
+<h3 id="精度误差说明"><a href="#精度误差说明" class="headerlink" title="精度误差说明"></a><strong>精度误差说明</strong></h3><p>​    浮点数类型有个缺陷，就是不精准。下面我来重点解释一下为什么 MySQL 的浮点数不够精准。比如，我们设计一个表，有f1 这个字段，插入值分别为 0.47,0.44,0.19 ，我们期待的运行结果是： 0.47 + 0.44 + 0.19 &#x3D;1.1。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248283086.png" alt="img"></p>
+<p>而使用 sum之后查询， 查询结果 1.0999999999999999 。虽然误差很小，但确实有误差。 你也可以尝试把数据类型 改成 FLOAT ，然后运行求和查询，得到的是， 1.0999999940395355 。显然，误差更大了。</p>
+<p><em><strong>*那么，为什么会存在这样的误差呢？问题还是出在 MySQL** **对浮点类型数据的存储方式上。*</strong></em></p>
+<p>​    MySQL 用 4 个字节存储 FLOAT 类型数据，用 8 个字节来存储 DOUBLE 类型数据。无论哪个，都是采用二 进制的方式来进行存储的。比如 9.625 ，用二进制来表达，就是 1001.101 ，或者表达成 1.001101×2^3 。如果尾数不是 0 或 5 （比如 9.624 ），你就无法用一个二进制数来精确表达。进而，就只好在取值允许的范围内进行四舍五入。</p>
+<p>​    在编程中，如果用到浮点数，要特别注意误差问题， <strong>因为浮点数是不准确的，所以我们要避免使用“&#x3D;”来判断两个数是否相等。</strong> 同时，在一些对精确度要求较高的项目中，千万不要使用浮点数，不然会导致结 果错误，甚至是造成不可挽回的损失。</p>
+<p><em><strong>*那么，MySQL*</strong></em> <strong>有没有精准的数据类型呢？</strong></p>
+<p>​    当然有，这就是定点数类型： DECIMAL 。</p>
+<h2 id="定点数类型"><a href="#定点数类型" class="headerlink" title="定点数类型"></a><strong>定点数类型</strong></h2><h3 id="类型介绍-2"><a href="#类型介绍-2" class="headerlink" title="类型介绍"></a><strong>类型介绍</strong></h3><p>​    MySQL中的定点数类型只有 DECIMAL 一种类型。</p>
+<table>
+<thead>
+<tr>
+<th><em>*<em>*</em>*数据类型****</em>*</th>
+<th><em>*<em>*</em>*字节数****</em>*</th>
+<th><em>*<em>*</em>*含义****</em>*</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DECIMAL(M,D)</strong>,DEC,NUMERIC</td>
+<td>M+2字节</td>
+<td>有效范围由M和D决定</td>
+</tr>
+</tbody></table>
+<p>​    <strong>使用 DECIMAL(M,D)</strong> <em>*<em>*的方式表示高精度小数。其中，*</em>*<em>M*</em>*<em>被称为精度，*</em>*<em>D*</em>*<em>被称为标度。*</em>*<em>0&lt;&#x3D;M&lt;&#x3D;65*</em>*<em>， 0&lt;&#x3D;D&lt;&#x3D;30，*</em>*<em>D&lt;M*</em>*<em>。*</em>*</em></p>
+<p>​    例如，定义DECIMAL （5,2）的类型，表示该列取值范围是 -999.99~999.99 。</p>
+<p>​    <strong>DECIMAL(M,D)的最大取值范围与</strong> <strong>DOUBLE</strong> <strong>类型一样</strong> ，但是有效的数据范围是由 M 和 D 决定的。</p>
+<p>​    DECIMAL 的存储空间并不是固定的，由精度值 M 决定，总共占用的存储空间为 M+2 个字节。也就是说，在一些对精度要求不高的场景下，比起占用同样字节长度的定点数，浮点数表达的数值范围可以更大一些。</p>
+<p>​    定点数在MySQL 内部是以 字符串 的形式进行存储，这就决定了它一定是精准的。</p>
+<h4 id="当DECIMAL类型不指定精度和标度时，其默认为DECIMAL-10-0-。"><a href="#当DECIMAL类型不指定精度和标度时，其默认为DECIMAL-10-0-。" class="headerlink" title="当DECIMAL类型不指定精度和标度时，其默认为DECIMAL(10,0)。"></a><strong>当DECIMAL类型不指定精度和标度时，其默认为DECIMAL(10,0)。</strong></h4><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248283122.png" alt="img"></p>
+<p>​    </p>
+<h4 id="当数据的精度超出了定点数类型的精度范围时，则MySQL同样会进行四舍五入处理。"><a href="#当数据的精度超出了定点数类型的精度范围时，则MySQL同样会进行四舍五入处理。" class="headerlink" title="当数据的精度超出了定点数类型的精度范围时，则MySQL同样会进行四舍五入处理。"></a><strong>当数据的精度超出了定点数类型的精度范围时，则MySQL同样会进行四舍五入处理。</strong></h4><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248293128.png" alt="img"></p>
+<p>​     </p>
+<h4 id="当整数部分超出范围时，同样会报错。"><a href="#当整数部分超出范围时，同样会报错。" class="headerlink" title="*当整数部分超出范围时，同样会报错。*"></a><em><strong>*当整数部分超出范围时，同样会报错。*</strong></em></h4><p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248293134.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248293136.png" alt="img"></p>
+<h3 id="浮点数-vs-定点数"><a href="#浮点数-vs-定点数" class="headerlink" title="浮点数 vs 定点数"></a><strong>浮点数 vs 定点数</strong></h3><p>​    浮点数相对于定点数的优点是在长度一定的情况下，浮点类型取值范围大，但是不精准，适用于需要取值范围大，又可以容忍微小误差的科学计算场景（比如计算化学、分子建模、流体动力学等）</p>
+<p>​    定点数类型取值范围相对小，但是精准，没有误差，适合于对精度要求极高的场景 （比如涉及金额计算的场景）</p>
+<p>​     <strong>（ 由于 DECIMAL 数据类型的精准性，在项目中，除了极少数（比如商品编号）用到整数类型外，其他的数值都用的是 DECIMAL，原因就是这个项目所处的零售行业，要求精准，一分钱也不能差。）</strong></p>
+<h2 id="位类型：BIT"><a href="#位类型：BIT" class="headerlink" title="位类型：BIT"></a>位类型：BIT</h2><p>​    <em>*<em>*BIT类型中存储的是二进制值，类似*</em>*<em>010110*</em>*<em>。*</em>*</em></p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*二进制字符串类型*</strong></em></th>
+<th><em><strong>*长度*</strong></em></th>
+<th><em><strong>*长度范围*</strong></em></th>
+<th><em><strong>*占用空间*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*BIT(M)*</strong></em></td>
+<td><em><strong>*M*</strong></em></td>
+<td><em><strong>*1 &lt;&#x3D; M &lt;&#x3D; 64*</strong></em></td>
+<td><em>*<em>*约为*</em>**(M + 7)&#x2F;8*</em>*<em>个字节*</em>**</td>
+</tr>
+</tbody></table>
+<p>​    <strong>BIT类型，如果没有指定</strong> <em>*<em>*(M)*</em>*<em>，默认是*</em>*<em>1*</em>*<em>位。这个*</em>*<em>1*</em>*<em>位，表示只能存*</em>*<em>1*</em>*<em>位的二进制值。这里*</em>**(M)*</em>*<em>是表示二进制的位数，位数最小值为1*</em>*<em>，最大值为*</em>*<em>64*</em>*<em>。*</em>**</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248293158.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248293160.png" alt="img"></p>
+<p>​     </p>
+<p>​    <em><strong>*注意：在向BIT类型的字段中插入数据时，一定要确保插入的数据在BIT类型支持的范围内。*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248303166.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248303168.png" alt="img"></p>
+<p>​    <strong>使用SELECT</strong><em>*<em>*命令查询位字段时，可以用*</em> *<em>BIN() 、OCT()*</em>*<em>或*</em> *<em>HEX()*</em> *<em>函数进行读取；也可以+0读取十进制的数据*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248303174.png" alt="img"></p>
+<h2 id="日期与时间类型"><a href="#日期与时间类型" class="headerlink" title="日期与时间类型"></a><strong>日期与时间类型</strong></h2><p>​    日期与时间是重要的信息，在我们的系统中，几乎所有的数据表都用得到。原因是客户需要知道数据的时间标签，从而进行数据查询、统计和处理。</p>
+<p>​    MySQL有多种表示日期和时间的数据类型，不同的版本可能有所差异， MySQL8.0 版本支持的日期和时间类型主要有：<strong>YEAR</strong> <em>*<em>*类型、*</em>*<em>TIME*</em>*<em>类型、*</em>*<em>DATE*</em>*<em>类型、*</em>*<em>DATETIME*</em>*<em>类型和*</em>*<em>TIMESTAMP*</em>*<em>类型。*</em>*</em></p>
+<p>​    <strong>YEAR</strong> <em><strong>*类型通常用来表示** **年*</strong></em></p>
+<p>​    <em><strong>*DATE** *<em>类型通常用来表示*</em> **年、月、日*</strong></em></p>
+<p>​    <em><strong>*TIME** *<em>类型通常用来表示*</em> **时、分、秒*</strong></em></p>
+<p>​    <em><strong>*DATETIME** *<em>类型通常用来表示*</em> **年、月、日、时、分、秒*</strong></em></p>
+<p>​    <em>*<em>*TIMESTAMP*</em> *<em>类型通常用来表示带*</em>*<em>时区*</em>*<em>的*</em> *<em>年、月、日、时、分、秒*</em>*</em></p>
+<p><strong>建议写日期时间类型的数据时都加上当引号。</strong></p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*类型*</strong></em></th>
+<th><em><strong>*名称*</strong></em></th>
+<th><em><strong>*字节*</strong></em></th>
+<th><em><strong>*日期格式*</strong></em></th>
+<th><em><strong>*最小值*</strong></em></th>
+<th><em><strong>*最大值*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*YEAR*</strong></em></td>
+<td><em><strong>*年*</strong></em></td>
+<td><em><strong>*1*</strong></em></td>
+<td><em>*<em>*YYYY*</em>*<em>或*</em>*<em>YY*</em>*</em></td>
+<td><em><strong>*1901*</strong></em></td>
+<td><em><strong>*2155*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*TIME*</strong></em></td>
+<td><em><strong>*时间*</strong></em></td>
+<td><em><strong>*3*</strong></em></td>
+<td><em><strong>*HH:MM:SS*</strong></em></td>
+<td><em><strong>*-838:59:59*</strong></em></td>
+<td><em><strong>*838:59:59*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*DATE*</strong></em></td>
+<td><em><strong>*日期*</strong></em></td>
+<td><em><strong>*3*</strong></em></td>
+<td><em><strong>*YYYY-MM-DD*</strong></em></td>
+<td><em><strong>*1000-01-01*</strong></em></td>
+<td><em><strong>*9999-12-03*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*DATETIME*</strong></em></td>
+<td><em><strong>*日期 时间*</strong></em></td>
+<td><em><strong>*8*</strong></em></td>
+<td><em><strong>*YYYY-MM-DD HH:MM:SS*</strong></em></td>
+<td><em><strong>*1000-01-01 00:00:00*</strong></em></td>
+<td><em><strong>*9999-12-31 23:59:59*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*TIMESTAMP*</strong></em></td>
+<td><em><strong>*日期 时间*</strong></em></td>
+<td><em><strong>*4*</strong></em></td>
+<td><em><strong>*YYYY-MM-DD*</strong></em><em><strong>*HH:MM:SS*</strong></em></td>
+<td><em><strong>*1970-01-01*</strong></em><em><strong>*00:00:00 UTC*</strong></em></td>
+<td><em><strong>*2038-01-19*</strong></em><em><strong>*03:14:07UTC*</strong></em></td>
+</tr>
+</tbody></table>
+<p>​    可以看到，不同数据类型表示的时间内容不同、取值范围不同，而且占用的字节数也不一样，你要根据实际需要灵活选取。</p>
+<p>​    为什么时间类型 TIME 的取值范围不是 -23:59:59 ～ 23:59:59 呢？原因是 MySQL 设计的 TIME 类型，不光表示一天之内的时间，而且可以用来表示一个时间间隔，这个时间间隔可以超过 24 小时。</p>
+<h3 id="YEAR类型"><a href="#YEAR类型" class="headerlink" title="YEAR类型"></a><strong>YEAR类型</strong></h3><p>​    YEAR类型用来表示年份，在所有的日期时间类型中所占用的存储空间最小，只需要 1 个字节 的存储空间。<strong>YEAR</strong> <em>*<em>*默认格式就是*</em>*<em>“YYYY”*</em>*<em>，没必要写成*</em>*<em>YEAR(4).*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248303212.png" alt="img"></p>
+<p><em>*<em>*在MySQL*</em>*<em>中，*</em>*<em>YEAR*</em>*<em>有以下几种存储格式：*</em>*</em></p>
+<p>​    <em>*<em>*1.以4*</em>*<em>位*</em>*<em>字符串或数字格式*</em>*<em>表示*</em>*<em>YEAR*</em>*<em>类型，其格式为*</em>*<em>YYYY*</em>*<em>，最小值为*</em>*<em>1901*</em>*<em>，最大值为*</em>*<em>2155*</em>*<em>。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248313218.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248313220.png" alt="img"></p>
+<p>​    </p>
+<p>​    <em>*<em>*2.以2位*</em>*<em>字符串格式*</em>*<em>表示*</em>*<em>YEAR*</em>*<em>类型，最小值为*</em>*<em>00*</em>*<em>，最大值为*</em>*<em>99*</em>*<em>。*</em>*</em></p>
+<p>​        当取值为01到69时，表示 2001 到 2069；</p>
+<p>​        当取值为70到99 时，表示 1970 到 1999；</p>
+<p>​        当取值 整数 的0或00 添加的话，那么是 0000年；</p>
+<p>​        当取值是日期&#x2F;字符串的’0’ 添加的话，是 2000年。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248313234.png" alt="img"></p>
+<p>​    <strong>从MySQL5.5.27</strong> <strong>开始，</strong> <strong>2</strong> <strong>位格式的</strong> <strong>YEAR</strong> <strong>已经不推荐使用</strong> 。</p>
+<p>​    从MySQL 8.0.19 开始，不推荐使用指定显示宽度的 YEAR(4) 数据类型。</p>
+<h3 id="DATE类型"><a href="#DATE类型" class="headerlink" title="DATE类型"></a><strong>DATE类型</strong></h3><p>​    DATE类型表示日期，没有时间部分，格式为 YYYY - MM - DD ，其中， <em>*<em>*YYYY*</em>*<em>表示年份，*</em>*<em>MM*</em>*<em>表示月份，*</em>*<em>DD*</em>*</em> <strong>表示日期。</strong>需要 3 个字节 的存储空间。在向 DATE 类型的字段插入数据时，同样需要满足一定的格式条件。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248323246.png" alt="img"></p>
+<p>​    1.以 YYYY - MM - DD 格式或者 YYYYMMDD 格式表示的字符串日期，其最小取值为 1000-01-01 ，最大取值为 9999-12-03。 <em>*<em>*YYYYMMDD*</em>*<em>格式会被转化为*</em>*<em>YYYY-MM-DD*</em>*<em>格式。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248323252.png" alt="img"></p>
+<p>​    2.以 YY - MM - DD 格式或者 YYMMDD 格式表示的字符串日期，此格式中，年份为两位数值或字符串满足YEAR类型的格式条件为：当年份取值为 00 到 69 时，会被转化为 2000 到 2069 ；当年份取值为 70 到 99时，会被转化为1970 到 1999 。(不建议使用)</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248323258.png" alt="img"></p>
+<p>​    <strong>3.使用</strong> <em><strong>*CURRENT_DATE()** *<em>或者*</em> *<em>NOW()*</em> **函数，会插入当前系统的日期。*</strong></em></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248323266.png" alt="img"></p>
+<h3 id="TIME类型"><a href="#TIME类型" class="headerlink" title="TIME类型"></a><strong>TIME类型</strong></h3><p>​    TIME类型用来表示时间，不包含日期部分。在 MySQL 中，需要 3 个字节 的存储空间来存储 TIME 类型的数据，可以使用“HH:MM:SS” 格式来表示 TIME 类型，其中， <em>*<em>*HH*</em>*<em>表示小时，*</em>*<em>MM*</em>*<em>表示分钟，*</em>*<em>SS*</em>*<em>表示秒。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248333274.png" alt="img"></p>
+<p>​    在MySQL 中，向 TIME 类型的字段插入数据时，也可以使用几种不同的格式。</p>
+<p>​    <strong>1.可以使用带有冒号的字符串</strong>，比如’ D HH:MM:SS’ ‘(推荐)、’ HH:MM:SS ‘(推荐) 、 ‘ HH:MM ‘ 、 ‘ D HH:MM ‘ 、 ‘ D HH ‘ 或 ‘ SS ‘ 格式，都能被正 确地插入TIME 类型的字段中。<strong>其中</strong> <em>*<em>*D*</em>*<em>表示天，其最小值为*</em>*<em>0*</em>*<em>，最大值为*</em>*<em>34*</em>*</em> <strong>。</strong>如果使用带有 D 格式的字符串 插入TIME 类型的字段时<strong>，</strong> <em>*<em>*D*</em>*<em>会被转化为小时，计算格式为*</em>*<em>D*24+HH*</em>*</em> <strong>。</strong>当使用带有冒号并且不带 D 的字符串表示时间时，表示当天的时间，比如12:10 表示 12:10:00 ，而不是 00:12:10 。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248333282.png" alt="img"></p>
+<p>​    <strong>2.可以使用不带有冒号的字符串或者数字</strong>，格式为’ HHMMSS ‘ 或者 HHMMSS 。如果插入一个不合法的字符串或者数字， MySQL 在存储数据时，会将其自动转化为00:00:00 进行存储。比如 1210 ， MySQL 会将最右边的两位解析成秒，表示 00:12:10，而不是 12:10:00.</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248333288.png" alt="img"></p>
+<p>​    <strong>3.使用</strong> <em><strong>*CURRENT_TIME()** *<em>或者*</em> *<em>NOW()*</em> **，会插入当前系统的时间。*</strong></em></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248333294.png" alt="img"></p>
+<h3 id="DATETIME类型"><a href="#DATETIME类型" class="headerlink" title="DATETIME类型"></a><strong>DATETIME类型</strong></h3><p>​    DATETIME类型在所有的日期时间类型中占用的存储空间最大，总共需要 8 个字节的存储空间。在格式上为DATE 类型和 TIME 类型的组合，可以表示为 YYYY - MM - DD HH:MM:SS ，其中 YYYY 表示年份， MM 表示月份，DD 表示日期， HH 表示小时， MM 表示分钟， SS 表示秒。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248343302.png" alt="img"></p>
+<p>在向 DATETIME 类型的字段插入数据时，同样需要满足一定的格式条件。</p>
+<p>​    </p>
+<p>​    <strong>1.以</strong> <em>*<em>*YYYY*</em>**-*</em>*<em>MM*</em>*<em>-*</em>*<em>DD HH:MM:SS*</em> *<em>格式或者*</em> *<em>YYYYMMDDHHMMSS*</em> *<em>格式的字符串插入*</em>*<em>DATETIME*</em>** <strong>类型的字段</strong>时，最小值为1000-01-01 00:00:00 ，最大值为 9999-12-03 23:59:59 。</p>
+<p>​    以YYYYMMDDHHMMSS 格式的数字插入 DATETIME 类型的字段时，会被转化为 YYYY-MM-DD HH:MM:SS格式。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248343314.png" alt="img"></p>
+<p>​    <strong>2.以</strong> <em>*<em>*YY*</em>**-*</em>*<em>MM*</em>*<em>-*</em>*<em>DD HH:MM:SS*</em> *<em>格式或者*</em> *<em>YYMMDDHHMMSS*</em> *<em>格式的字符串插入*</em>*<em>DATETIME*</em>** <strong>类型的字段</strong>时，两位 数的年份规则符合YEAR 类型的规则， 00 到 69 表示 2000 到 2069 ； 70 到 99 表示 1970 到 1999 。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248343320.png" alt="img"></p>
+<p>​    <strong>3.使用函数</strong> <em>*<em>*CURRENT_TIMESTAMP()*</em> *<em>和*</em> *<em>NOW()*</em> *<em>，可以向*</em>*<em>DATETIME*</em>*<em>类型的字段插入系统的当前日期和时间。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248353326.png" alt="img"></p>
+<h3 id="TIMESTAMP类型"><a href="#TIMESTAMP类型" class="headerlink" title="TIMESTAMP类型"></a><strong>TIMESTAMP类型</strong></h3><p>​    TIMESTAMP类型也可以表示日期时间，其显示格式与 DATETIME 类型相同，都是 YYYY - MM - DD HH:MM:SS ，需要 4 个字节的存储空间。但是 TIMESTAMP 存储的时间范围比 DATETIME 要小很多，只能存储 “1970-01-01 00:00:01 UTC”到 “2038-01-19 03:14:07 UTC” 之间的时间。其中， UTC 表示世界统一时间，也叫作世界标准时间。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248353334.png" alt="img"> </p>
+<p>​    </p>
+<p>​     <em><strong>*存储数据的时候需要对当前时间所在的时区进行转换，查询数据的时候再将时间转换回当前的时区。因此，使用TIMESTAMP存储的同一个时间值，在不同的时区查询时会显示不同的时间。*</strong></em></p>
+<p><em>*<em>*向TIMESTAMP*</em>*<em>类型的字段插入数据时，有不同的插入方式：*</em>*</em></p>
+<p>​    1.插入的数据格式满足 <strong>YYYY（YY）-MM-DD HH:MM:SS</strong> <em><strong>*和*</strong></em></p>
+<p><strong>YYYY（YY）MMDDHHMMSS</strong> ，当两位数值的年份同样符合YEAR类型的规则条件，只不过表示的时间范围要小很多。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248363346.png" alt="img"></p>
+<p>​    \2. 插入的数据格式也可以满足<strong>YYYY（YY）@MM@DD@HH@MM@SS,也具有一定的可读性。</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248363352.png" alt="img"></p>
+<p>​    <strong>3.使用函数</strong> <em>*<em>*CURRENT_TIMESTAMP()*</em> *<em>和*</em> *<em>NOW()*</em> *<em>，可以向TIMESTAMP*</em>*<em>类型的字段插入系统的当前日期和时间。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248363358.png" alt="img"></p>
+<p>​     <strong>如果向TIMESTAMP类型的字段插入的时间超出了TIMESTAMP类型的范围，则MySQL会抛出错误信息。</strong></p>
+<h3 id="TIMESTAMP和DATETIME的区别"><a href="#TIMESTAMP和DATETIME的区别" class="headerlink" title="TIMESTAMP和DATETIME的区别"></a><strong>TIMESTAMP和DATETIME的区别</strong></h3><p>​    <strong>1.TIMESTAMP存储空间比较小，表示的日期时间范围也比较小底层存储方式不同，TIMESTAMP</strong> <em>*<em>*底层存储的是毫秒值，距离*</em>*<em>1970-1-1 0:0:0 0*</em>*<em>毫秒的毫秒值。*</em>*</em></p>
+<p>​    <strong>2.两个日期比较大小或日期计算时，TIMESTAMP</strong> <em><strong>*更方便、更快。*</strong></em></p>
+<p>​    </p>
+<p>​    <em>*<em>*3.TIMESTAMP和时区有关。TIMESTAMP*</em>*<em>会根据用户的时区不同，显示不同的结果。而*</em>*<em>DATETIME*</em>*<em>则只能反映出插入时当地的时区，其他时区的人查看数据必然会有误差的。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248373374.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248373376.png" alt="img"></p>
+<h3 id="开发中经验"><a href="#开发中经验" class="headerlink" title="开发中经验"></a><strong>开发中经验</strong></h3><p>​    用得最多的日期时间类型，就是 DATETIME 。虽然 MySQL 也支持 YEAR （年）、 TIME （时间）、 DATE（日期），以及 TIMESTAMP 类型，但是在实际项目中，尽量用 DATETIME 类型。因为这个数据类型 包括了完整的日期和时间信息，取值范围也最大，使用起来比较方便。毕竟，如果日期时间信息分散在 好几个字段，很不容易记，而且查询的时候，SQL 语句也会更加复杂。</p>
+<p>​    此外，一般存注册时间、商品发布时间等，不建议使用DATETIME 存储，而是使用 时间戳 ，因为DATETIME虽然直观，但不便于计算。</p>
+<p>​    获取时间戳的函数： <em><strong>*UNIX_TIMESTAMP()*</strong></em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248373388.png" alt="img"></p>
+<h2 id="文本字符串类型"><a href="#文本字符串类型" class="headerlink" title="文本字符串类型"></a><strong>文本字符串类型</strong></h2><p>​    在实际的项目中，我们还经常遇到一种数据，就是字符串数据。</p>
+<p>​    MySQL中，文本字符串总体上分为 CHAR 、 VARCHAR 、 TINYTEXT 、 TEXT 、 MEDIUMTEXT 、 LONGTEXT 、 ENUM(枚举类型) 、 SET（集合类型） 等类型。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248383398.png" alt="img"></p>
+<h3 id="CHAR与VARCHAR类型"><a href="#CHAR与VARCHAR类型" class="headerlink" title="CHAR与VARCHAR类型"></a><strong>CHAR与VARCHAR类型</strong></h3><p>​    <strong>CHAR和</strong> <em>*<em>*VARCHAR*</em>*<em>类型都可以存储比较短的字符串。*</em>*</em></p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*字符串*</strong></em><em><strong>*(*</strong></em><em><strong>*文本*</strong></em><em><strong>*)*</strong></em><em><strong>*类型*</strong></em></th>
+<th><em><strong>*特点*</strong></em></th>
+<th><em><strong>*长度*</strong></em></th>
+<th><em><strong>*长度范围*</strong></em></th>
+<th><em><strong>*占用的存储空间*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*CHAR(M)*</strong></em></td>
+<td><em><strong>*固定长度*</strong></em></td>
+<td><em><strong>*M*</strong></em></td>
+<td><em><strong>*0&lt;&#x3D;M&lt;&#x3D;255*</strong></em></td>
+<td><em>*<em>*M*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*VARCHAR(M)*</strong></em></td>
+<td><em><strong>*可变长度*</strong></em></td>
+<td><em><strong>*M*</strong></em></td>
+<td><em><strong>*0&lt;&#x3D;M&lt;&#x3D;65535*</strong></em></td>
+<td><em>*<em>*(*</em>*<em>实际长度*</em>**+1)*</em>*<em>个字节*</em>**</td>
+</tr>
+</tbody></table>
+<h4 id="CHAR类型"><a href="#CHAR类型" class="headerlink" title="CHAR类型"></a><strong>CHAR类型</strong></h4><p>​    定义CHAR类型字段时，声明的字段长度即为CHAR类型字段所占的存储空间的字节数。</p>
+<p>​    <strong>CHAR(M) 类型一般需要预先定义字符串长度。如果不指定</strong> <em>*<em>*(M)*</em>*<em>，则表示长度默认是*</em>*<em>1*</em>*<em>个字符。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248383415.png" alt="img"></p>
+<p>​    <strong>插入字符串时，数据的时间长度不能大于CHAR声明的长度。</strong></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248383419.png" alt="img"></p>
+<p>​    <strong>如果保存时，数据的实际长度比CHAR</strong> <em>*<em>*类型声明的长度小，则会在*</em> *<em>右侧填充*</em> *<em>空格以达到指定的长度。当MySQL*</em>*<em>检索*</em>*<em>CHAR*</em>*<em>类型的数据时，*</em>*<em>CHAR*</em>*<em>类型的字段会去除尾部的空格。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248393423.png" alt="img"></p>
+<h4 id="VARCHAR类型："><a href="#VARCHAR类型：" class="headerlink" title="VARCHAR类型："></a><strong>VARCHAR类型：</strong></h4><p>​     MySQL4.0版本以下，varchar(20)：指的是20字节，如果存放UTF8汉字时，只能存6个（每个汉字3字 节） ；MySQL5.0版本以上，varchar(20)：指的是20字符。</p>
+<p>​    <strong>VARCHAR类型的字段所占用的存储空间为字符串实际长度加1个字节。</strong></p>
+<p>​    </p>
+<p>​    VARCHAR(M) 定义时， 必须指定 长度 M ，否则报错。</p>
+<p>​     <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248393435.png" alt="img"></p>
+<p>​    检索VARCHAR 类型的字段数据时，会保留数据尾部的空格。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248403439.png" alt="img"></p>
+<h4 id="哪些情况使用-CHAR-或-VARCHAR-更好"><a href="#哪些情况使用-CHAR-或-VARCHAR-更好" class="headerlink" title="哪些情况使用 CHAR 或 VARCHAR 更好"></a><strong>哪些情况使用 CHAR 或 VARCHAR 更好</strong></h4><table>
+<thead>
+<tr>
+<th><em><strong>*类型*</strong></em></th>
+<th><em><strong>*特点*</strong></em></th>
+<th><em><strong>*空间上*</strong></em></th>
+<th><em><strong>*时间上*</strong></em></th>
+<th><em><strong>*适用场景*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*CHAR(M)*</strong></em></td>
+<td><em><strong>*固定长度*</strong></em></td>
+<td><em><strong>*浪费存储空间*</strong></em></td>
+<td><em><strong>*效率高*</strong></em></td>
+<td><em><strong>*存储不大，速度要求高*</strong></em></td>
+</tr>
+<tr>
+<td><em><strong>*VARCHAR(M)*</strong></em></td>
+<td><em><strong>*可变长度*</strong></em></td>
+<td><em><strong>*节省存储空间*</strong></em></td>
+<td><em><strong>*效率低*</strong></em></td>
+<td><em>*<em>*非*</em>*<em>CHAR*</em>*<em>的情况*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><em>*<em>*情况*</em>*<em>1*</em>*</em> ：存储很短的信息。比如门牌号码 101 ， 201…… 这样很短的信息应该用 char ，因为 varchar 还要占个byte用于存储信息长度，本来打算节约存储的，结果得不偿失。</p>
+<p><em>*<em>*情况*</em>*<em>2*</em>*</em> ：固定长度的。比如使用 uuid 作为主键，那用 char 应该更合适。因为他固定长度， varchar 动态根据长度的特性就消失了，而且还要占个长度信息。</p>
+<p><em>*<em>*情况*</em>*<em>3*</em>*</em> ：十分频繁改变的 column 。因为 varchar 每次存储都要有额外的计算，得到长度等工作，如果一个非常频繁改变的，那就要有很多的精力用于计算，而这些对于char 来说是不需要的.</p>
+<p><em>*<em>*情况*</em>*<em>4*</em>*</em> ：具体存储引擎中的情况：</p>
+<p>​    MyISAM 数据存储引擎和数据列： MyISAM 数据表，最好使用固定长度 (CHAR) 的数据列代替可变长度(VARCHAR) 的数据列。这样使得整个表静态化，从而使 数据检索更快 ，用空间换时间。</p>
+<p>​    MEMORY 存储引擎和数据列： MEMORY 数据表目前都使用固定长度的数据行存储，因此无论使用CHAR或 VARCHAR 列都没有关系，两者都是作为 CHAR 类型处理的。</p>
+<p>​    InnoDB 存储引擎，建议使用 VARCHAR 类型。因为对于 InnoDB 数据表，内部的行存储格式并没有区 分固定长度和可变长度列（所有数据行都使用指向数据列值的头指针），而且 <strong>主要影响性能的因素</strong> <strong>是数据行使用的存储总量</strong> ，由于 char 平均占用的空间多于 varchar ，所以除了简短并且固定长度的,其他考虑varchar 。这样节省空间，对磁盘 I&#x2F;O 和数据存储总量比较好。</p>
+<h3 id="TEXT类型"><a href="#TEXT类型" class="headerlink" title="TEXT类型"></a><strong>TEXT类型</strong></h3><p>​    在MySQL 中， TEXT 用来保存文本类型的字符串，总共包含 4 种类型，分别为  <em>*<em>*TINYTEXT*</em>*<em>、*</em>*<em>TEXT*</em>*<em>、 MEDIUMTEXT 和*</em> *<em>LONGTEXT*</em>*</em>  类型。</p>
+<p>​    在向TEXT 类型的字段保存和查询数据时，系统自动按照实际长度存储，不需要预先定义长度。这一点和VARCHAR类型相同。</p>
+<p>​    每种TEXT 类型保存的数据长度和所占用的存储空间不同，如下：</p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*文本字符串类*</strong></em><em><strong>*型*</strong></em></th>
+<th><em><strong>*特点*</strong></em></th>
+<th><em><strong>*长度*</strong></em></th>
+<th><em><strong>*长度范围*</strong></em></th>
+<th><em><strong>*占用的存储空间*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*TINYTEXT*</strong></em></td>
+<td><em>*<em>*小文本*</em>*<em>、*</em>*<em>可变长*</em>*<em>度*</em>*</em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em><strong>*0&lt;&#x3D;L&lt;&#x3D;255*</strong></em></td>
+<td><em>*<em>*L+2*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*TEXT*</strong></em></td>
+<td><em><strong>*文本、可变长度*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em><strong>*0&lt;&#x3D;L&lt;&#x3D;65535*</strong></em></td>
+<td><em>*<em>*L+2*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*MEDIUMTEXT*</strong></em></td>
+<td><em><strong>*中等文本、可变长度*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em><strong>*0&lt;&#x3D;L&lt;&#x3D;16777215*</strong></em></td>
+<td><em>*<em>*L+3*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LONGTEXT*</strong></em></td>
+<td><em><strong>*大文本、可变长度*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em>*<em>*0&lt;&#x3D;L&lt;&#x3D;4294967295*</em>*<em>（相当于*</em>*<em>4GB*</em>*<em>）*</em>*</em></td>
+<td><em>*<em>*L+4*</em>*<em>个字节*</em>*</em></td>
+</tr>
+</tbody></table>
+<p>​    <strong>由于实际存储的长度不确定，MySQL</strong> <strong>不允许</strong> <strong>TEXT</strong> <strong>类型的字段做主键</strong> 。遇到这种情况，你只能采用CHAR(M)，或者 VARCHAR(M) 。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248403479.png" alt="img"></p>
+<p> <em>*<em>*在保存和查询数据时，并没有删除*</em>*<em>TEXT*</em>*<em>类型的数据尾部的空格。*</em>*</em></p>
+<h3 id="开发中经验-1"><a href="#开发中经验-1" class="headerlink" title="开发中经验"></a><strong>开发中经验</strong></h3><p>​    TEXT文本类型，可以存比较大的文本段，搜索速度稍慢，因此如果不是特别大的内容，建议使用 CHAR ， VARCHAR来代替。还有 <em><strong>*TEXT*</strong></em> <strong>类型不用加默认值</strong>，加了也没用。而且 text 和 blob 类型的数据删除后容易导致 “空洞”，使得文件碎片比较多，所以频繁使用的表不建议包含 TEXT 类型字段，建议单独分出去，单独用 一个表。</p>
+<h2 id="ENUM类型"><a href="#ENUM类型" class="headerlink" title="ENUM类型"></a><strong>ENUM类型</strong></h2><p>​    ENUM类型也叫作枚举类型， ENUM 类型的取值范围需要在定义字段时进行指定。设置字段值时， <strong>ENUM类型只允许从成员中选取单个值，不能一次选取多个值。</strong></p>
+<p>​    其所需要的存储空间由定义ENUM 类型时指定的成员个数决定。</p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*文本字符串类型*</strong></em></th>
+<th><em><strong>*长度*</strong></em></th>
+<th><em><strong>*长度范围*</strong></em></th>
+<th><em><strong>*占用的存储空间*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*ENUM*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em><strong>*1&lt;&#x3D;L&lt;&#x3D;65535*</strong></em></td>
+<td><em>*<em>*1*</em>*<em>或*</em>*<em>2*</em>*<em>个字节*</em>*</em></td>
+</tr>
+</tbody></table>
+<p>​    <strong>1. 当ENUM</strong> <em>*<em>*类型包含*</em>*<em>1*</em>*<em>～*</em>*<em>255*</em>*<em>个成员时，需要*</em>*<em>1*</em>*<em>个字节的存储空间；*</em>*</em></p>
+<p>​    <em>*<em>*2. 当ENUM*</em>*<em>类型包含*</em>*<em>256*</em>*<em>～*</em>*<em>65535*</em>*<em>个成员时，需要*</em>*<em>2*</em>*<em>个字节的存储空间。*</em>*</em></p>
+<p>​    <em>*<em>*3. ENUM类型的成员个数的上限为*</em>*<em>65535*</em>*<em>个。*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248403503.png" alt="img"></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248413505.png" alt="img"></p>
+<h2 id="SET类型"><a href="#SET类型" class="headerlink" title="SET类型"></a>SET类型</h2><p>​    SET表示一个字符串对象，可以包含 0 个或多个成员，但成员个数的上限为 64 。设置字段值时， <strong>可以取 取值范围内的 0 个或多个值。</strong></p>
+<p>​    当SET 类型包含的成员个数不同时，其所占用的存储空间也是不同的，具体如下：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248413515.png" alt="img"></p>
+<p>​    SET类型在存储数据时成员个数越多，其占用的存储空间越大。注意： SET 类型在选取成员时， <strong>可以一次选择多个成员</strong> ，这一点与ENUM 类型不同。</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248413519.png" alt="img"></p>
+<p> 举例：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248423523.png" alt="img"></p>
+<h2 id="二进制字符串类型"><a href="#二进制字符串类型" class="headerlink" title="二进制字符串类型"></a><strong>二进制字符串类型</strong></h2><p>​    MySQL中的二进制字符串类型主要存储一些二进制数据，比如可以存储图片、音频和视频等二进制数据。</p>
+<p>​    MySQL中支持的二进制字符串类型主要包括 <em>*<em>*BINARY*</em>*<em>、*</em>*<em>VARBINARY*</em>*<em>、*</em>*<em>TINYBLOB*</em>*<em>、*</em>*<em>BLOB*</em>*<em>、*</em>*<em>MEDIUMBLOB*</em>*</em> <strong>和 LONGBLOB</strong>类型。</p>
+<h3 id="BINARY与VARBINARY类型"><a href="#BINARY与VARBINARY类型" class="headerlink" title="BINARY与VARBINARY类型"></a><strong>BINARY与VARBINARY类型</strong></h3><p>​    <strong>BINARY和</strong> <em>*<em>*VARBINARY*</em> *<em>类似于*</em> *<em>CHAR*</em>*<em>和*</em>*<em>VARCHAR*</em>*</em> ，只是它们存储的是二进制字符串。</p>
+<p>​    BINARY (M)为固定长度的二进制字符串， M 表示最多能存储的 <em><strong>*字节数*</strong></em> ，取值范围是 0~255 个字符。 <strong>如果未指定(M)，表示只能存储</strong> <strong>1个字节</strong> 。</p>
+<p>​    例如BINARY (8) ，表示最多能存储 8 个字节，如果字段值不足 (M) 个字节，将在右边填充’\0’ 以补齐指定长度。</p>
+<p>​    VARBINARY (M)为可变长度的二进制字符串， M 表示最多能存储的 <strong>字节数</strong> ，总字节数不能超过行的字节长度限制65535 ，另外还要考虑额外字节开销， VARBINARY 类型的数据除了存储数据本身外，还需要 1 或 2 个字节来存储数据的字节数。</p>
+<p>​     <strong>VARBINARY类型 必须</strong> <strong>指定(M)</strong> <strong>，否则报错。</strong></p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*二进制字符串类型*</strong></em></th>
+<th><em><strong>*特点*</strong></em></th>
+<th><em><strong>*值的长度*</strong></em></th>
+<th><em><strong>*占用空间*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*BINARY(M)*</strong></em></td>
+<td><em><strong>*固定长度*</strong></em></td>
+<td><em>*<em>*M*</em>*<em>（*</em>*<em>0&lt;&#x3D;M&lt;&#x3D;255*</em>*<em>）*</em>*</em></td>
+<td><em>*<em>*M*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*VARBINARY(M)*</strong></em></td>
+<td><em><strong>*可变长度*</strong></em></td>
+<td><em>*<em>*M*</em>*<em>（*</em>*<em>0&lt;&#x3D;M&lt;&#x3D;65535*</em>*<em>）*</em>*</em></td>
+<td><em>*<em>*M+1*</em>*<em>个字节*</em>*</em></td>
+</tr>
+</tbody></table>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248423550.png" alt="img"></p>
+<p> <img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248433552.png" alt="img"></p>
+<h3 id="BLOB类型"><a href="#BLOB类型" class="headerlink" title="BLOB类型"></a><strong>BLOB类型</strong></h3><p>​    BLOB是一个 二进制大对象 ，可以容纳可变数量的数据。</p>
+<p>​    MySQL中的 BLOB 类型包括 <em>*<em>*TINYBLOB*</em>*<em>、*</em>*<em>BLOB*</em>*<em>、*</em>*<em>MEDIUMBLOB*</em>*<em>和*</em>*</em> <strong>LONGBLOB</strong> 4 种类型，它们可容纳值的最大长度不同。可以存储一个二进制的大对象，比如 图片 、 音频 和 视频 等。</p>
+<p>​    需要注意的是，在实际工作中，往往不会在MySQL 数据库中使用 BLOB 类型存储大对象数据，通常会将图片、音频和视频文件存储到 服务器的磁盘上 ，并将图片、音频和视频的访问路径存储到 MySQL 中。</p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*二进制字符串类型*</strong></em></th>
+<th><em><strong>*值的长度*</strong></em></th>
+<th><em><strong>*长度范围*</strong></em></th>
+<th><em><strong>*占用空间*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*TINYBLOB*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em><strong>*0&lt;&#x3D;L&lt;&#x3D;255*</strong></em></td>
+<td><em>*<em>*L+1*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*BLOB*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em>*<em>*0&lt;&#x3D;L&lt;&#x3D;65535*</em>*<em>（相当于*</em>*<em>64KB*</em>*<em>）*</em>*</em></td>
+<td><em>*<em>*L+2*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*MEDIUMBLOB*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em>*<em>*0&lt;&#x3D;L&lt;&#x3D;16777215*</em>*<em>（相当于*</em>*<em>16MB*</em>*<em>）*</em>*</em></td>
+<td><em>*<em>*L+3*</em>*<em>个字节*</em>*</em></td>
+</tr>
+<tr>
+<td><em><strong>*LONGBLOB*</strong></em></td>
+<td><em><strong>*L*</strong></em></td>
+<td><em>*<em>*0&lt;&#x3D;L&lt;&#x3D;4294967295*</em>*<em>（相当于*</em>*<em>4GB*</em>*<em>）*</em>*</em></td>
+<td><em>*<em>*L+4*</em>*<em>个字节*</em>*</em></td>
+</tr>
+</tbody></table>
+<h2 id="-7"><a href="#-7" class="headerlink" title=""></a></h2><h3 id="TEXT和BLOB的使用注意事项："><a href="#TEXT和BLOB的使用注意事项：" class="headerlink" title="TEXT和BLOB的使用注意事项："></a><strong>TEXT和BLOB的使用注意事项：</strong></h3><p>在使用 text 和 blob 字段类型时要注意以下几点，以便更好的发挥数据库的性能。</p>
+<p>​    ① BLOB 和 TEXT 值也会引起自己的一些问题，特别是执行了大量的删除或更新操作的时候。删除这种值会在数据表中留下很大的” 空洞 “ ，以后填入这些 “ 空洞 “ 的记录可能长度不同。为了提高性能，建议定期使用 OPTIMIZE TABLE 功能对这类表进行 碎片整理 。</p>
+<p>​    ② 如果需要对大文本字段进行模糊查询，MySQL 提供了 前缀索引 。但是仍然要在不必要的时候避免检索大型的BLOB 或 TEXT 值。例如， SELECT * 查询就不是很好的想法，除非你能够确定作为约束条件的WHERE子句只会找到所需要的数据行。否则，你可能毫无目的地在网络上传输大量的值。</p>
+<p>​    ③ 把BLOB 或 TEXT 列 分离到单独的表 中。在某些环境中，如果把这些数据列移动到第二张数据表中，可以让你把原数据表中的数据列转换为固定长度的数据行格式，那么它就是有意义的。这会 减少主表中的碎片 ，使你得到固定长度数据行的性能优势。它还使你在主数据表上运行 SELECT * 查询的时候不会通过网络传输大量的BLOB 或 TEXT 值。</p>
+<h2 id="JSON-类型"><a href="#JSON-类型" class="headerlink" title="JSON 类型"></a><strong>JSON 类型</strong></h2><p>​    JSON（JavaScript Object Notation）是一种轻量级的 数据交换格式 。简洁和清晰的层次结构使得 JSON 成为理想的数据交换语言。它易于人阅读和编写，同时也易于机器解析和生成，并有效地提升网络传输效率。 <strong>JSON</strong> <strong>可以将</strong> <strong>JavaScript</strong> <strong>对象中表示的一组数据转换为字符串，然后就可以在网络或者程序之间轻</strong> <strong>松地传递这个字符串，并在需要的时候将它还原为各编程语言所支持的数据格式。</strong></p>
+<p>​    在MySQL 5.7 中，就已经支持 JSON 数据类型。在 MySQL 8.x 版本中， JSON 类型提供了可以进行自动验证的 JSON文档和优化的存储结构，使得在 MySQL 中存储和读取 JSON 类型的数据更加方便和高效。</p>
+<p>​    创建数据表，表中包含一个JSON类型的字段 js ：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248433591.png" alt="img"></p>
+<p>​     </p>
+<p>​    向表中插入JSON数据：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248443597.png" alt="img"></p>
+<p> <em>*<em>*当需要检索*</em>*<em>JSON*</em>*<em>类型的字段中数据的某个具体值时，可以使用*</em>*<em>“-&gt;”*</em>*<em>和*</em>*<em>“-&gt;&gt;”*</em>*<em>符号：*</em>*</em></p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248453603.png" alt="img"></p>
+<h2 id="空间类型（了解）"><a href="#空间类型（了解）" class="headerlink" title="空间类型（了解）"></a><strong>空间类型（了解）</strong></h2><p>​    MySQL 空间类型扩展支持地理特征的生成、存储和分析。这里的地理特征表示世界上具有位置的任何东西，可以是一个实体，例如一座山；可以是空间，例如一座办公楼；也可以是一个可定义的位置。</p>
+<p>​    例如一个十字路口等等。MySQL中使用 Geometry （几何） 来表示所有地理特征。 Geometry 指一个点或点的集合，代表世界上任何具有位置的事物。</p>
+<p>​    MySQL的空间数据类型（Spatial Data Type）对应于 OpenGIS 类，包括单值类型： <em>*<em>*GEOMETRY*</em>*<em>、*</em>*<em>POINT*</em>*<em>、 LINESTRING、*</em>*<em>POLYGON*</em>*</em> 以及集合类型： <em>*<em>*MULTIPOINT*</em>*<em>、*</em>*<em>MULTILINESTRING*</em>*<em>、*</em>*<em>MULTIPOLYGON*</em>*</em> <strong>、 GEOMETRYCOLLECTION</strong> 。</p>
+<table>
+<thead>
+<tr>
+<th><em><strong>*类型*</strong></em></th>
+<th><em><strong>*类型举例*</strong></em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em><strong>*空间数据类型*</strong></em></td>
+<td><em>*<em>*单值类型：*</em>*<em>GEOMETRY*</em>*<em>、*</em>*<em>POINT*</em>*<em>、*</em>*</em>         <em>*<em>*LINESTRING、*</em>*<em>POLYGON*</em>*<em>；*</em>*</em><em>*<em>*集合类型：*</em>*<em>MULTIPOINT*</em>*<em>、*</em>*</em>         <em><strong>*MULTILINESTRING、*</strong></em>             <em><strong>*MULTIPOLYGON、*</strong></em>          <em><strong>*GEOMETRYCOLLECTION*</strong></em></td>
+</tr>
+</tbody></table>
+<p>​    Geometry是所有空间集合类型的基类，其他类型如POINT 、 LINESTRING 、 POLYGON 都是 Geometry 的子类。</p>
+<p>​    Point，顾名思义就是点，有一个坐标值。</p>
+<p>​    例如POINT(121.213342 31.234532) ， POINT(30 10) ，坐标值支持DECIMAL 类型，经度（longitude）在前，维度（latitude）在后，用空格分隔。</p>
+<p>​    LineString，线，由一系列点连接而成。如果线从头至尾没有交叉，那就是简单的</p>
+<p>（simple）；如果起点和终点重叠，那就是封闭的（closed）。</p>
+<p>​    例如LINESTRING(30 10,10 30,40 40)，点与点之间用逗号分隔，一个点中的经纬度用空格分隔，与 POINT 格式一致。</p>
+<p>​    Polygon，多边形。可以是一个实心平面形，即没有内部边界，也可以有空洞，类似纽扣。最 简单的就是只有一个外边界的情况。</p>
+<p>​    例如POLYGON((0 0,10 0,10 10, 0 10))。</p>
+<p>下面展示几种常见的几何图形元素：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248453639.png" alt="img"></p>
+<p>​    MultiPoint、 MultiLineString 、 MultiPolygon 、 GeometryCollection 这 4 种类型都是集合类，是多个Point、 LineString 或 Polygon 组合而成。</p>
+<p>下面展示的是多个同类或异类几何图形元素的组合：</p>
+<p><img src="/2022/10/06/MySQL%E5%9F%BA%E7%A1%80%E7%AF%87(%E4%B8%AD)/202210061248463647.png" alt="img"></p>
+<h2 id="小结及选择建议"><a href="#小结及选择建议" class="headerlink" title="小结及选择建议"></a><strong>小结及选择建议</strong></h2><p>​    在定义数据类型时，如果确定是 整数 ，就用 INT ； 如果是 小数 ，一定用定点数类型</p>
+<p>DECIMAL(M,D) ； 如果是日期与时间，就用 DATETIME 。</p>
+<p>这样做的好处是，首先确保你的系统不会因为数据类型定义出错。不过，凡事都是有两面的，可靠性 好，并不意味着高效。比如，TEXT 虽然使用方便，但是效率不如 CHAR(M) 和 VARCHAR(M) 。</p>
+<p>​    关于字符串的选择，建议参考如下阿里巴巴的《Java开发手册》规范：</p>
+<p><strong>阿里巴巴《</strong> <strong>Java</strong> <strong>开发手册》之</strong> <strong>MySQL</strong> <strong>数据库：</strong></p>
+<p>​    任何字段如果为非负数，必须是 UNSIGNED</p>
+<p>​    【 强制 】小数类型为 DECIMAL ，禁止使用 FLOAT 和 DOUBLE 。</p>
+<p>说明：在存储的时候， FLOAT 和 DOUBLE 都存在精度损失的问题，很可能在比较值的时候，得到不正确的结果。如果存储的数据范围超过 DECIMAL 的范围，建议将数据拆成整数和小数并 分开存储。</p>
+<p>​    【 强制 】如果存储的字符串长度几乎相等，使用 CHAR 定长字符串类型。</p>
+<p>​    【 强制 】 VARCHAR 是可变长字符串，不预先分配存储空间，长度不要超过 5000 。如果存储长度大 于此值，定义字段类型为 TEXT ，独立出来一张表，用主键来对应，避免影响其它字段索引效率。</p>
+]]></content>
+      <categories>
+        <category>MySQL学习</category>
+        <category>MySQL基础篇</category>
+      </categories>
+      <tags>
+        <tag>导航</tag>
+        <tag>分享</tag>
+      </tags>
+  </entry>
 </search>
